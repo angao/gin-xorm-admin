@@ -111,7 +111,7 @@ MgrUser.delMgrUser = function () {
             ajax.start();
         };
 
-        Feng.confirm("是否删除用户" + MgrUser.seItem.account + "?",operation);
+        Feng.confirm("是否删除用户" + MgrUser.seItem.Account + "?",operation);
     }
 };
 
@@ -156,7 +156,7 @@ MgrUser.unfreeze = function () {
  */
 MgrUser.resetPwd = function () {
     if (this.check()) {
-        var userId = this.seItem.id;
+        var userId = this.seItem.Id;
         parent.layer.confirm('是否重置密码为111111？', {
             btn: ['确定', '取消'],
             shade: false //不显示遮罩

@@ -8,6 +8,7 @@ import (
 	"github.com/angao/gin-xorm-admin/db"
 	"github.com/angao/gin-xorm-admin/forms"
 	"github.com/angao/gin-xorm-admin/models"
+	"github.com/angao/gin-xorm-admin/utils"
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
 )
@@ -99,4 +100,117 @@ func (UserController) ToEdit(c *gin.Context) {
 		"user":     user.User,
 		"roleName": user.Role.Name,
 	})
+}
+
+// Add handle save user
+func (UserController) Add(c *gin.Context) {
+	var userDao db.UserDao
+	var userAddForm forms.UserAddForm
+	var user models.User
+
+	if err := c.Bind(&userAddForm); err != nil {
+		r.JSON(c.Writer, http.StatusBadRequest, gin.H{
+			"error": err,
+		})
+		return
+	}
+	log.Printf("user: %#v\n", userAddForm)
+	if userAddForm.Password != userAddForm.RePassword {
+		r.JSON(c.Writer, http.StatusBadRequest, gin.H{
+			"error": "密码不一致",
+		})
+		return
+	}
+	user.Name = userAddForm.Name
+	user.Account = userAddForm.Account
+	user.Email = userAddForm.Email
+	user.Sex = userAddForm.Sex
+	password, err := utils.Encrypt(userAddForm.Password, "hello")
+	if err != nil {
+		r.JSON(c.Writer, http.StatusBadRequest, gin.H{
+			"error": err,
+		})
+		return
+	}
+	user.Password = password
+	user.Salt = "hello"
+	err = userDao.Save(user)
+	if err != nil {
+		r.JSON(c.Writer, http.StatusBadRequest, gin.H{
+			"error": err,
+		})
+		return
+	}
+	r.JSON(c.Writer, http.StatusOK, "")
+}
+
+// Delete 删除用户
+func (UserController) Delete(c *gin.Context) {
+	id := c.PostForm("userId")
+	if id == "" {
+		r.JSON(c.Writer, http.StatusBadRequest, gin.H{
+			"message": "参数错误",
+		})
+		return
+	}
+	var userDao db.UserDao
+	pid, err := strconv.ParseInt(id, 10, 64)
+	if err != nil {
+		r.JSON(c.Writer, http.StatusInternalServerError, gin.H{
+			"message": err,
+		})
+		return
+	}
+	err = userDao.Delete(pid)
+	if err != nil {
+		r.JSON(c.Writer, http.StatusInternalServerError, gin.H{
+			"message": err,
+		})
+		return
+	}
+	r.JSON(c.Writer, http.StatusOK, "")
+}
+
+// Reset password
+func (UserController) Reset(c *gin.Context) {
+	id := c.PostForm("userId")
+	if id == "" {
+		r.JSON(c.Writer, http.StatusBadRequest, gin.H{
+			"message": "参数错误",
+		})
+		return
+	}
+	var userDao db.UserDao
+	pid, err := strconv.ParseInt(id, 10, 64)
+	if err != nil {
+		r.JSON(c.Writer, http.StatusInternalServerError, gin.H{
+			"message": err,
+		})
+		return
+	}
+	var user *models.User
+	user, err = userDao.GetUserByID(pid)
+	if err != nil {
+		r.JSON(c.Writer, http.StatusInternalServerError, gin.H{
+			"message": err,
+		})
+		return
+	}
+	user.Id = pid
+	password, err := utils.Encrypt("111111", user.Salt)
+	if err != nil {
+		r.JSON(c.Writer, http.StatusInternalServerError, gin.H{
+			"message": err,
+		})
+		return
+	}
+	user.Password = password
+	err = userDao.Update(user)
+	if err != nil {
+		r.JSON(c.Writer, http.StatusInternalServerError, gin.H{
+			"message": err,
+		})
+		return
+	}
+	r.JSON(c.Writer, http.StatusOK, "")
 }

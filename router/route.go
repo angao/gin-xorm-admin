@@ -55,6 +55,10 @@ func Init() {
 		userGroup.GET("/user_info", user.Info)
 		userGroup.GET("/user_add", user.ToAdd)
 		userGroup.GET("/user_edit/:id", user.ToEdit)
+
+		userGroup.POST("/add", user.Add)
+		userGroup.POST("/delete", user.Delete)
+		userGroup.POST("/reset", user.Reset)
 	}
 
 	// dept /dept/

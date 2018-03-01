@@ -45,6 +45,20 @@ func (UserDao) GetUser(account string) (*models.User, error) {
 	return user, nil
 }
 
+// GetUserByID query user by id
+func (UserDao) GetUserByID(id int64) (*models.User, error) {
+	user := new(models.User)
+	has, err := x.Table("sys_user").Where("id = ?", id).Get(user)
+	if err != nil {
+		log.Printf("error: %#v\n", err)
+		return nil, err
+	}
+	if !has {
+		return nil, errors.New("user not found")
+	}
+	return user, nil
+}
+
 // GetUserRole query user by primary key
 func (UserDao) GetUserRole(id int64) (*models.UserRole, error) {
 	user := new(models.UserRole)
@@ -69,4 +83,23 @@ func (UserDao) List(userForm forms.UserForm) ([]UserBean, error) {
 		return nil, err
 	}
 	return users, nil
+}
+
+// Save is save one user
+func (UserDao) Save(user models.User) error {
+	_, err := x.Table("sys_user").Insert(&user)
+	return err
+}
+
+// Delete is delete a user
+func (UserDao) Delete(id int64) error {
+	user := new(models.User)
+	_, err := x.Table("sys_user").Id(id).Delete(user)
+	return err
+}
+
+// Update user
+func (UserDao) Update(user *models.User) error {
+	_, err := x.Table("sys_user").Id(user.Id).Update(user)
+	return err
 }
