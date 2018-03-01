@@ -247,12 +247,12 @@ function onBodyDown(event) {
 }
 
 $(function () {
-    // Feng.initValidator("userInfoForm", UserInfoDlg.validateFields);
+    Feng.initValidator("userInfoForm", UserInfoDlg.validateFields);
 
-    // var ztree = new $ZTree("treeDemo", "/dept/tree");
-    // ztree.bindOnClick(UserInfoDlg.onClickDept);
-    // ztree.init();
-    // instance = ztree;
+    var ztree = new $ZTree("treeDemo", "/dept/tree");
+    ztree.bindOnClick(UserInfoDlg.onClickDept);
+    ztree.init();
+    instance = ztree;
 
     // //初始化性别选项
     // $("#sex").val($("#sexValue").val());

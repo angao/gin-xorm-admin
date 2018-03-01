@@ -3,6 +3,7 @@ package controller
 import (
 	"log"
 	"net/http"
+	"strconv"
 
 	"github.com/angao/gin-xorm-admin/db"
 	"github.com/angao/gin-xorm-admin/forms"
@@ -69,7 +70,33 @@ func (UserController) Info(c *gin.Context) {
 	})
 }
 
-// Add handle add user page
-func (UserController) Add(c *gin.Context) {
+// ToAdd handle add user page
+func (UserController) ToAdd(c *gin.Context) {
 	r.HTML(c.Writer, http.StatusOK, "system/user/user_add.html", gin.H{})
+}
+
+// ToEdit handle edit user paget
+func (UserController) ToEdit(c *gin.Context) {
+	id := c.Param("id")
+	if id == "" {
+		r.JSON(c.Writer, http.StatusBadRequest, gin.H{
+			"error": "参数错误",
+		})
+		return
+	}
+	var userDao db.UserDao
+	pid, err := strconv.ParseInt(id, 10, 64)
+	if err != nil {
+		log.Printf("%#v\n", err)
+		return
+	}
+	user, err := userDao.GetUserRole(pid)
+	if err != nil {
+		log.Printf("%#v\n", err)
+		return
+	}
+	r.HTML(c.Writer, http.StatusOK, "system/user/user_edit.html", gin.H{
+		"user":     user.User,
+		"roleName": user.Role.Name,
+	})
 }

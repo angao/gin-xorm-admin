@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/gin-gonic/gin"
 	"github.com/go-ini/ini"
 	//
 	_ "github.com/go-sql-driver/mysql"
@@ -41,11 +40,12 @@ func init() {
 	if err != nil {
 		log.Fatal(err)
 	}
+
 	err = x.StartFSWatcher()
 	if err != nil {
 		log.Printf("sql parse error: %#v\n", err)
 	}
 
 	x.Ping()
-	x.ShowSQL(gin.IsDebugging())
+	// x.ShowSQL(true)
 }

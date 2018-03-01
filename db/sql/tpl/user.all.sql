@@ -39,6 +39,9 @@ WHERE u.status != 3
 {{ if ne .DeptID 0 }}
     AND u.deptid = {{ .DeptID }}
 {{ end }}
+{{ if ne .Name ""}}
+    AND (u.name like '%{{ .Name }}%' OR u.phone like '%{{ .Name }}%')
+{{ end }}
 {{ if eq .Order "desc" }}
     ORDER BY id DESC
 {{ else }}

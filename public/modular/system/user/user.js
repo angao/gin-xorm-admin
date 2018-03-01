@@ -69,7 +69,7 @@ MgrUser.openChangeUser = function () {
             area: ['800px', '450px'], //宽高
             fix: false, //不固定
             maxmin: true,
-            content: Feng.ctxPath + '/mgr/user_edit/' + this.seItem.id
+            content: Feng.ctxPath + '/mgr/user_edit/' + this.seItem.Id
         });
         this.layerIndex = index;
     }
@@ -87,7 +87,7 @@ MgrUser.roleAssign = function () {
             area: ['300px', '400px'], //宽高
             fix: false, //不固定
             maxmin: true,
-            content: Feng.ctxPath + '/mgr/role_assign/' + this.seItem.id
+            content: Feng.ctxPath + '/mgr/role_assign/' + this.seItem.Id
         });
         this.layerIndex = index;
     }
@@ -100,7 +100,7 @@ MgrUser.delMgrUser = function () {
     if (this.check()) {
 
         var operation = function(){
-            var userId = MgrUser.seItem.id;
+            var userId = MgrUser.seItem.Id;
             var ajax = new $ax(Feng.ctxPath + "/mgr/delete", function () {
                 Feng.success("删除成功!");
                 MgrUser.table.refresh();

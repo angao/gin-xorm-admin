@@ -53,7 +53,8 @@ func Init() {
 		userGroup.GET("/", user.Home)
 		userGroup.POST("/list", user.List)
 		userGroup.GET("/user_info", user.Info)
-		userGroup.GET("/user_add", user.Add)
+		userGroup.GET("/user_add", user.ToAdd)
+		userGroup.GET("/user_edit/:id", user.ToEdit)
 	}
 
 	// dept /dept/
