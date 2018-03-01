@@ -1,0 +1,14 @@
+{{ define "blackboard.html" }}
+<div class="container-fluid" style="padding: 0 !important;">
+	<div class="row">
+		<div class="col-sm-12">
+			{{ range $index, $notice := .noticeList}}
+				<div class="alert alert-success alert-dismissable">
+					<button aria-hidden="true" data-dismiss="alert" class="close" type="button">×</button>
+                    {{ $notice.Content }}
+				</div>
+			{{ end }}
+		</div>
+	</div>
+</div>
+{{ end }}

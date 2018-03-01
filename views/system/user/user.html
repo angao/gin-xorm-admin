@@ -1,0 +1,63 @@
+{{ define "system/user/user.html" }}
+<div class="row">
+	<div class="col-sm-12">
+		<div class="ibox float-e-margins">
+			<div class="ibox-title">
+				<h5>用户管理</h5>
+			</div>
+			<div class="ibox-content">
+				<div class="row row-lg">
+					<div class="col-sm-12">
+						<div class="row">
+							<div class="col-lg-2 col-sm-3">
+								<div class="panel panel-default">
+									<div class="panel-heading">组织机构</div>
+									<div class="panel-body dept-tree">
+										<ul id="deptTree" class="ztree"></ul>
+									</div>
+								</div>
+							</div>
+							<div class="col-lg-10 col-sm-9">
+								<div class="row">
+									<div class="col-lg-10 col-sm-9">
+										<div class="row">
+											<div class="col-lg-4 col-sm-12">
+												<input class="form-control" type="text" id="name" name="name" placeholder="帐号/姓名/手机号">
+											</div>
+											<div class="col-lg-4 col-sm-6">
+												<input class="form-control" type="text" id="beginTime" name="beginTime" placeholder="注册开始日期">
+											</div>
+											<div class="col-lg-4 col-sm-6">
+												<input class="form-control" type="text" id="endTime" name="endTime" placeholder="注册结束日期">
+											</div>
+										</div>
+									</div>
+									<div class="col-lg-2 col-sm-3">
+										<div class="row">
+											<div class="col-lg-12 col-sm-12">
+												<button class="btn btn-primary" onclick="MgrUser.search()">搜索</button>
+												<button class="btn btn-default" onclick="MgrUser.resetSearch()">重置</button>
+											</div>
+										</div>
+									</div>
+								</div>
+								<div class="hidden-xs" id="managerTableToolbar" role="group" style="padding-top: 5px;">
+									<button class="btn btn-primary" onclick="MgrUser.openAddMgr()"/><i class="fa fa-plus"></i>&nbsp;添加</button>
+									<button class="btn btn-info" onclick="MgrUser.openChangeUser()"/><i class="fa fa-edit"></i>&nbsp;修改</button>
+									<button class="btn btn-danger" onclick="MgrUser.delMgrUser()"/><i class="fa fa-remove"></i>&nbsp;删除</button>
+									<button class="btn btn-info" onclick="MgrUser.resetPwd()"/><i class="fa fa-refresh"></i>&nbsp;重置密码</button>
+									<button class="btn btn-warning" onclick="MgrUser.freezeAccount()"/><i class="fa fa-warning"></i>&nbsp;冻结</button>
+									<button class="btn btn-info" onclick="MgrUser.unfreeze()"/><i class="fa fa-check-circle"></i>&nbsp;解除冻结</button>
+									<button class="btn btn-warning" onclick="MgrUser.roleAssign()"/><i class="fa fa-user-secret"></i>&nbsp;角色分配</button>
+								</div>
+								<table id="managerTable"/>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<script src="/public/modular/system/user/user.js"></script>
+{{ end }}

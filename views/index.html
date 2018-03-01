@@ -1,0 +1,15 @@
+{{ define "index.html" }}
+<div>
+    <!--左侧导航开始-->
+{{ template "common/tab.html" .}}
+    <!--左侧导航结束-->
+
+    <!--右侧部分开始-->
+{{ template "common/right.html" .}}
+    <!--右侧部分结束-->
+
+    <!--右侧边栏开始-->
+{{ template "common/theme.html" .}}
+    <!--右侧边栏结束-->
+</div>
+{{ end }}

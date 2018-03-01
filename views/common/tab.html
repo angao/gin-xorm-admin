@@ -1,0 +1,56 @@
+{{ define "common/tab.html" }}
+<nav class="navbar-default navbar-static-side" role="navigation">
+    <div class="nav-close"><i class="fa fa-times-circle"></i>
+    </div>
+    <div class="sidebar-collapse">
+        <ul class="nav" id="side-menu">
+            <li class="nav-header">
+                <div class="dropdown profile-element">
+                    <span><img alt="image" class="img-circle" src="http://www.atool.org/placeholder.png?size=200x200" width="64px" height="64px"/></span>
+                    <a data-toggle="dropdown" class="dropdown-toggle" href="#">
+                        <span class="clear">
+                        <span class="block m-t-xs"><strong class="font-bold">{{ .username }}</strong></span>
+                        <span class="text-muted text-xs block">{{ .rolename }}<b class="caret"></b></span>
+                        </span>
+                    </a>
+                    <ul class="dropdown-menu animated fadeInRight m-t-xs">
+                        <li><a class="J_menuItem" href="/mgr/user_info">个人资料</a></li>
+                        <li><a class="J_menuItem" href="/mgr/user_chpwd">修改密码</a></li>
+                        <li class="divider"></li>
+                        <li><a href="/logout">安全退出</a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="logo-element">GS
+                </div>
+            </li>
+            {{ range $index, $menu := .menus}}
+            {{ $le := len $menu.Children }}
+            {{ if eq $le 0 }}
+            <li>
+                <a class="J_menuItem" href="{{ $menu.URL }}" name="tabMenuItem">
+                    <i class="fa {{ $menu.Icon }}"></i>
+                    <span class="nav-label">{{ $menu.Name }}</span>
+                </a>
+            </li>
+            {{ else }}
+            <li>
+                <a href="#">
+                    <i class="fa {{ $menu.Icon }}"></i>
+                    <span class="nav-label">{{ $menu.Name }}</span>
+                    <span class="fa arrow"></span>
+                </a>
+                <ul class="nav nav-second-level">
+                    {{ range $iu, $mu := $menu.Children }}
+                    <li>
+                        <a class="J_menuItem" href="{{ $mu.URL }}" name="tabMenuItem">{{ $mu.Name }}</a>
+                    </li>
+                    {{ end }}
+                </ul>
+            </li>
+            {{ end }}
+            {{ end }}
+        </ul>
+    </div>
+</nav>
+{{ end }}
