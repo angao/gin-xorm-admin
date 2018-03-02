@@ -14,6 +14,7 @@ import (
 type UserDao struct {
 }
 
+// UserBean for form
 type UserBean struct {
 	Id         int64
 	Avatar     string

@@ -1,8 +1,6 @@
 package db
 
 import (
-	"fmt"
-
 	"github.com/angao/gin-xorm-admin/models"
 )
 
@@ -10,11 +8,13 @@ import (
 type MenuDao struct{}
 
 // GetMenuByRoleIds 根据角色查询所属菜单
-func (MenuDao) GetMenuByRoleIds(roleID int64) ([]models.Menu, error) {
+func (MenuDao) GetMenuByRoleIds(roleIDs []string) ([]models.Menu, error) {
 	var menus []models.Menu
-	err := x.SqlMapClient("GetMenuByRoleIds", roleID).Find(&menus)
+	param := make(map[string]interface{})
+	param["roleIds"] = roleIDs
+	param["length"] = len(roleIDs) - 1
+	err := x.SqlTemplateClient("getMenuByRoleIds.sql", &param).Find(&menus)
 	if err != nil {
-		fmt.Printf("%#v\n", err)
 		return nil, err
 	}
 	return menus, nil

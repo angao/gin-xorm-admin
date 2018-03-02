@@ -3,7 +3,7 @@ package controller
 import (
 	"log"
 	"net/http"
-	"strconv"
+	"strings"
 
 	"fmt"
 
@@ -29,21 +29,23 @@ func (IndexController) Home(c *gin.Context) {
 		var menuDao db.MenuDao
 		user, err = userDao.GetUserRole(userID)
 		if err != nil {
-			log.Printf("%#v\n", err)
-		} else {
-			roleID, _ := strconv.ParseInt(user.RoleId, 10, 64)
-			menus, err := menuDao.GetMenuByRoleIds(roleID)
-			if err != nil {
-				log.Printf("%#v\n", err)
-				return
-			}
-			menus = buildTree(menus)
-			r.HTML(c.Writer, http.StatusOK, "index.html", gin.H{
+			r.HTML(c.Writer, http.StatusInternalServerError, "index.html", gin.H{
 				"username": user.User.Name,
-				"rolename": user.Role.Name,
-				"menus":    menus,
 			})
+			return
 		}
+		roleIDs := strings.Split(user.User.RoleId, ",")
+		menus, err := menuDao.GetMenuByRoleIds(roleIDs)
+		if err != nil {
+			log.Printf("%#v\n", err)
+			return
+		}
+		menus = buildTree(menus)
+		r.HTML(c.Writer, http.StatusOK, "index.html", gin.H{
+			"username": user.User.Name,
+			"rolename": user.Role.Name,
+			"menus":    menus,
+		})
 	}
 }
 

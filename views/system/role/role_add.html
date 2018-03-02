@@ -1,23 +1,43 @@
-@layout("/common/_container.html"){
+{{ define "system/role/role_add.html" }}
 <div class="ibox float-e-margins">
 	<div class="ibox-content">
 		<div class="form-horizontal" id="roleInfoForm">
-		
 			<input type="hidden" id="id" value="">
-
 			<div class="row">
 				<div class="col-sm-6 b-r">
-					<#input id="name" name="角色名称" underline="true"/>
-					<#input id="pName" name="上级名称" underline="true" hidden="pid" readonly="readonly"
-							clickFun="RolInfoDlg.showPNameSelectTree(); return false;"
-							style="background-color: #ffffff !important;"/>
-					<#input id="deptName" name="部门名称" hidden="deptid" readonly="readonly"
-							clickFun="RolInfoDlg.showDeptSelectTree(); return false;"
-							style="background-color: #ffffff !important;"/>
+					<div class="input-group">
+						<div class="input-group-addon">角色名称</div>
+						<input type="text" class="form-control" name="roleName" id="roleName" placeholder="角色名称" >
+					</div>
+
+					<div class="hr-line-dashed"></div>	
+
+					<div class="input-group">
+						<div class="input-group-addon">上级名称</div>
+						<input type="text" class="form-control" name="pName" id="pName"
+							 onclick="RolInfoDlg.showPNameSelectTree(); return false;" 
+							 style="background-color: #ffffff !important;" readonly="readonly" placeholder="上级名称"/>
+					</div>
+
+					<div class="hr-line-dashed"></div>	
+					<div class="input-group">
+						<div class="input-group-addon">部门名称</div>
+						<input type="text" class="form-control" name="deptName" id="deptName"
+								onclick="RolInfoDlg.showDeptSelectTree(); return false;" 
+								style="background-color: #ffffff !important;" readonly="readonly" placeholder="部门名称"/>
+					</div>
 				</div>
 				<div class="col-sm-6">
-					<#input id="tips" name="别名" underline="true"/>
-					<#input id="num" name="排序"/>
+					<div class="input-group">
+						<div class="input-group-addon">别名</div>
+						<input type="text" class="form-control" name="tips" id="tips" placeholder="别名" >
+					</div>
+
+					<div class="hr-line-dashed"></div>
+					<div class="input-group">
+						<div class="input-group-addon">排序</div>
+						<input type="text" class="form-control" name="num" id="num" placeholder="排序" >
+					</div>
 				</div>
 			</div>
 
@@ -35,13 +55,13 @@
 
 			<div class="row btn-group-m-t">
 				<div class="col-sm-10">
-					<#button btnCss="info" name="提交" id="ensure" icon="fa-check" clickFun="RolInfoDlg.addSubmit()"/>
-					<#button btnCss="danger" name="取消" id="cancel" icon="fa-eraser" clickFun="RolInfoDlg.close()"/>
+					<button class="btn btn-primary" onclick="Role.addSubmit()"><i class="fa fa-check"></i>&nbsp;提交</button>
+					<button class="btn btn-danger" onclick="Role.close()"><i class="fa fa-eraser"></i>&nbsp;取消</button>
 				</div>
 			</div>
 		</div>
 
 	</div>
 </div>
-<script src="${ctxPath}/static/modular/system/role/role_info.js"></script>
-@}
+<script src="/public/modular/system/role/role_info.js"></script>
+{{ end }}

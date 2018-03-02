@@ -1,9 +1,6 @@
-@layout("/common/_container.html"){
-
-
+{{ define "system/user/user_roleassign.html" }}
 <script type="text/javascript">
     $(function () {
-
         var index = parent.layer.getFrameIndex(window.name); //获取窗口索引
 
         $("#btn_close").bind("click", function () {
@@ -20,7 +17,7 @@
                 Feng.error("分配角色失败!" + data.responseJSON.message + "!");
             });
             ajax.set("roleIds", ids);
-            ajax.set("userId", "${userId}");
+            ajax.set("userId", "{{ .user.Id }}");
             ajax.start();
         });
 
@@ -43,12 +40,11 @@
             }
         };
 
-        var ztree = new $ZTree("zTree", "/role/roleTreeListByUserId/${userId}");
+        var ztree = new $ZTree("zTree", "/role/roleTreeListByUserId/{{ .user.Id }}");
         ztree.setSettings(setting);
         ztree.init();
     }
 </script>
-
 
 <!-- 配置grid -->
 <div class="container"
@@ -56,7 +52,7 @@
     <div class="row">
         <div class="ibox float-e-margins">
             <div class="ibox-title">
-                <h5>${userAccount!}</h5>
+                <h5>{{ .user.Account }}</h5>
             </div>
             <div class="ibox-content">
                 <ul id="zTree" class="ztree"></ul>
@@ -75,5 +71,4 @@
         </div>
     </div>
 </div>
-
-@}
+{{ end }}

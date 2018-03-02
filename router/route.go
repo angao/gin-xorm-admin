@@ -55,10 +55,14 @@ func Init() {
 		userGroup.GET("/user_info", user.Info)
 		userGroup.GET("/user_add", user.ToAdd)
 		userGroup.GET("/user_edit/:id", user.ToEdit)
+		userGroup.GET("/role_assign/:id", user.ToRoleAssign)
 
 		userGroup.POST("/add", user.Add)
 		userGroup.POST("/delete", user.Delete)
 		userGroup.POST("/reset", user.Reset)
+		userGroup.POST("/freeze", user.Freeze)
+		userGroup.POST("/unfreeze", user.UnFreeze)
+		userGroup.POST("/setRole", user.SetRole)
 	}
 
 	// dept /dept/
@@ -68,5 +72,20 @@ func Init() {
 		deptGroup.POST("/tree", dept.List)
 	}
 
+	// role /role/
+	role := new(controller.RoleController)
+	roleGroup := router.Group("/role", middlewares.Auth())
+	{
+		roleGroup.GET("/", role.Index)
+		roleGroup.POST("/list", role.List)
+		roleGroup.GET("/role_add", role.ToAdd)
+		roleGroup.POST("/roleTreeListByUserId/:userId", role.RoleTreeListByUserID)
+	}
+
+	menu := new(controller.MenuController)
+	menuGroup := router.Group("/menu", middlewares.Auth())
+	{
+		menuGroup.GET("/", menu.Index)
+	}
 	router.Run(":3000")
 }

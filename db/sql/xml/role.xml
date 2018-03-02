@@ -1,0 +1,18 @@
+<sqlMap>
+    <sql id="queryAllRole">
+        SELECT
+            id "id",
+            pid "pId",
+            NAME AS "name",
+            (
+                CASE
+                WHEN (pid = 0 OR pid IS NULL) THEN
+                    'true'
+                ELSE
+                    'false'
+                END
+            ) "open"
+        FROM
+            sys_role
+    </sql>
+</sqlMap>

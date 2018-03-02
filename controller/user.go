@@ -102,6 +102,31 @@ func (UserController) ToEdit(c *gin.Context) {
 	})
 }
 
+// ToRoleAssign handle user role
+func (UserController) ToRoleAssign(c *gin.Context) {
+	id := c.Param("id")
+	if id == "" {
+		r.JSON(c.Writer, http.StatusBadRequest, gin.H{
+			"error": "参数错误",
+		})
+		return
+	}
+	var userDao db.UserDao
+	pid, err := strconv.ParseInt(id, 10, 64)
+	if err != nil {
+		log.Printf("%#v\n", err)
+		return
+	}
+	user, err := userDao.GetUserByID(pid)
+	if err != nil {
+		log.Printf("%#v\n", err)
+		return
+	}
+	r.HTML(c.Writer, http.StatusOK, "system/user/user_roleassign.html", gin.H{
+		"user": user,
+	})
+}
+
 // Add handle save user
 func (UserController) Add(c *gin.Context) {
 	var userDao db.UserDao
@@ -125,7 +150,8 @@ func (UserController) Add(c *gin.Context) {
 	user.Account = userAddForm.Account
 	user.Email = userAddForm.Email
 	user.Sex = userAddForm.Sex
-	password, err := utils.Encrypt(userAddForm.Password, "hello")
+	randomStr := utils.RandomString(5)
+	password, err := utils.Encrypt(userAddForm.Password, randomStr)
 	if err != nil {
 		r.JSON(c.Writer, http.StatusBadRequest, gin.H{
 			"error": err,
@@ -133,7 +159,7 @@ func (UserController) Add(c *gin.Context) {
 		return
 	}
 	user.Password = password
-	user.Salt = "hello"
+	user.Salt = randomStr
 	err = userDao.Save(user)
 	if err != nil {
 		r.JSON(c.Writer, http.StatusBadRequest, gin.H{
@@ -213,4 +239,105 @@ func (UserController) Reset(c *gin.Context) {
 		return
 	}
 	r.JSON(c.Writer, http.StatusOK, "")
+}
+
+// SetRole set user role
+func (UserController) SetRole(c *gin.Context) {
+	roleIDs := c.PostForm("roleIds")
+	userID := c.PostForm("userId")
+
+	if roleIDs == "" || userID == "" {
+		r.JSON(c.Writer, http.StatusBadRequest, gin.H{
+			"message": "参数错误",
+		})
+		return
+	}
+	var userDao db.UserDao
+	id, err := strconv.ParseInt(userID, 10, 64)
+	if err != nil {
+		r.JSON(c.Writer, http.StatusBadRequest, gin.H{
+			"message": err,
+		})
+		return
+	}
+	user := models.User{
+		Id:     id,
+		RoleId: roleIDs,
+	}
+	err = userDao.Update(&user)
+	if err != nil {
+		r.JSON(c.Writer, http.StatusBadRequest, gin.H{
+			"message": err,
+		})
+		return
+	}
+	r.JSON(c.Writer, http.StatusOK, gin.H{
+		"message": "success",
+	})
+}
+
+// Freeze user
+func (UserController) Freeze(c *gin.Context) {
+	userID := c.PostForm("userId")
+	if userID == "" {
+		r.JSON(c.Writer, http.StatusBadRequest, gin.H{
+			"message": "参数错误",
+		})
+		return
+	}
+	var userDao db.UserDao
+	id, err := strconv.ParseInt(userID, 10, 64)
+	if err != nil {
+		r.JSON(c.Writer, http.StatusBadRequest, gin.H{
+			"message": err,
+		})
+		return
+	}
+	user := models.User{
+		Id:     id,
+		Status: 2,
+	}
+	err = userDao.Update(&user)
+	if err != nil {
+		r.JSON(c.Writer, http.StatusBadRequest, gin.H{
+			"message": err,
+		})
+		return
+	}
+	r.JSON(c.Writer, http.StatusOK, gin.H{
+		"message": "success",
+	})
+}
+
+// UnFreeze user
+func (UserController) UnFreeze(c *gin.Context) {
+	userID := c.PostForm("userId")
+	if userID == "" {
+		r.JSON(c.Writer, http.StatusBadRequest, gin.H{
+			"message": "参数错误",
+		})
+		return
+	}
+	var userDao db.UserDao
+	id, err := strconv.ParseInt(userID, 10, 64)
+	if err != nil {
+		r.JSON(c.Writer, http.StatusBadRequest, gin.H{
+			"message": err,
+		})
+		return
+	}
+	user := models.User{
+		Id:     id,
+		Status: 1,
+	}
+	err = userDao.Update(&user)
+	if err != nil {
+		r.JSON(c.Writer, http.StatusBadRequest, gin.H{
+			"message": err,
+		})
+		return
+	}
+	r.JSON(c.Writer, http.StatusOK, gin.H{
+		"message": "success",
+	})
 }

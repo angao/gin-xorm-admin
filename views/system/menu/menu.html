@@ -1,4 +1,4 @@
-@layout("/common/_container.html"){
+{{ define "system/menu/menu.html" }}
 <div class="row">
     <div class="col-sm-12">
         <div class="ibox float-e-margins">
@@ -10,32 +10,26 @@
                     <div class="col-sm-12">
                         <div class="row">
                             <div class="col-sm-3">
-                                <#NameCon id="menuName" name="菜单名称" />
+                                <div class="input-group">
+                                    <div class="input-group-addon">菜单名称</div>
+                                    <input type="text" class="form-control" name="menuName" id="menuName" placeholder="菜单名称" >
+                                </div>
                             </div>
                             <div class="col-sm-3">
-                                <#NameCon id="level" name="层级" />
-                            </div>
-                            <div class="col-sm-3">
-                                <#button name="搜索" icon="fa-search" clickFun="Menu.search()"/>
+                                <button class="btn btn-primary" onclick="Menu.search()"/><i class="fa fa-search"></i>&nbsp;搜索</button>
                             </div>
                         </div>
                         <div class="hidden-xs" id="menuTableToolbar" role="group">
-                            @if(shiro.hasPermission("/menu/add")){
-                                <#button name="添加" icon="fa-plus" clickFun="Menu.openAddMenu()"/>
-                            @}
-                            @if(shiro.hasPermission("/menu/edit")){
-                                <#button name="修改" icon="fa-edit" clickFun="Menu.openChangeMenu()" space="true"/>
-                            @}
-                            @if(shiro.hasPermission("/menu/remove")){
-                                <#button name="删除" icon="fa-remove" clickFun="Menu.delMenu()" space="true"/>
-                            @}
+                            <button class="btn btn-primary" onclick="Menu.openAddMenu()"/><i class="fa fa-plus"></i>&nbsp;添加</button>
+                            <button class="btn btn-info" onclick="Menu.openChangeMenu()" space="true"/><i class="fa fa-edit">&nbsp;修改</i></button>
+                            <button class="btn btn-danger" onclick="Menu.delMenu()" space="true"/><i class="fa fa-remove">&nbsp;删除</i></button>
                         </div>
-                        <#table id="menuTable"/>
+                        <table id="menuTable"/>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
-<script src="${ctxPath}/static/modular/system/menu/menu.js"></script>
-@}
+<script src="/public/modular/system/menu/menu.js"></script>
+{{ end }}

@@ -1,4 +1,4 @@
-@layout("/common/_container.html"){
+{{ define "system/role/role.html" }}
 <div class="row">
     <div class="col-sm-12">
         <div class="ibox float-e-margins">
@@ -10,32 +10,27 @@
                     <div class="col-sm-12">
                         <div class="row">
                             <div class="col-sm-3">
-                                <#NameCon id="roleName" name="角色名称" />
+                                <div class="input-group">
+                                    <div class="input-group-addon">角色名称</div>
+                                    <input type="text" class="form-control" name="roleName" id="roleName" placeholder="角色名称" >
+                                </div>
                             </div>
                             <div class="col-sm-3">
-                                <#button name="搜索" icon="fa-search" clickFun="Role.search()"/>
+                                <button class="btn btn-primary" onclick="Role.search()"/><i class="fa fa-search"></i>&nbsp;搜索</button>
                             </div>
                         </div>
                         <div class="hidden-xs" id="roleTableToolbar" role="group">
-                            @if(shiro.hasPermission("/role/add")){
-                                <#button name="添加" icon="fa-plus" clickFun="Role.openAddRole()" />
-                            @}
-                            @if(shiro.hasPermission("/role/edit")){
-                                <#button name="修改" icon="fa-edit" clickFun="Role.openChangeRole()" space="true"/>
-                            @}
-                            @if(shiro.hasPermission("/role/remove")){
-                                <#button name="删除" icon="fa-remove" clickFun="Role.delRole()" space="true"/>
-                            @}
-                            @if(shiro.hasPermission("/role/setAuthority")){
-                                <#button name="权限配置" icon="fa-user-secret" clickFun="Role.assign()" space="true"/>
-                            @}
+                            <button class="btn btn-primary" onclick="Role.openAddRole()"><i class="fa fa-plus"></i>&nbsp;添加</button>
+                            <button class="btn btn-info" onclick="Role.openChangeRole()"><i class="fa fa-edit"></i>&nbsp;修改</button>
+                            <button class="btn btn-danger" onclick="Role.delRole()"><i class="fa fa-remove"></i>&nbsp;删除</button>
+                            <button class="btn btn-warning" onclick="Role.assign()"><i class="fa fa-user-secret"></i>&nbsp;权限配置</button>
                         </div>
-                        <#table id="roleTable"/>
+                        <table id="roleTable"></table>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
-<script src="${ctxPath}/static/modular/system/role/role.js"></script>
-@}
+<script src="/public/modular/system/role/role.js"></script>
+{{ end }}

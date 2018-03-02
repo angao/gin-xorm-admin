@@ -121,7 +121,7 @@ MgrUser.delMgrUser = function () {
  */
 MgrUser.freezeAccount = function () {
     if (this.check()) {
-        var userId = this.seItem.id;
+        var userId = this.seItem.Id;
         var ajax = new $ax(Feng.ctxPath + "/mgr/freeze", function (data) {
             Feng.success("冻结成功!");
             MgrUser.table.refresh();
@@ -139,7 +139,7 @@ MgrUser.freezeAccount = function () {
  */
 MgrUser.unfreeze = function () {
     if (this.check()) {
-        var userId = this.seItem.id;
+        var userId = this.seItem.Id;
         var ajax = new $ax(Feng.ctxPath + "/mgr/unfreeze", function (data) {
             Feng.success("解除冻结成功!");
             MgrUser.table.refresh();
