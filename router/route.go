@@ -86,6 +86,7 @@ func Init() {
 	menuGroup := router.Group("/menu", middlewares.Auth())
 	{
 		menuGroup.GET("/", menu.Index)
+		menuGroup.POST("/list", menu.List)
 	}
 	router.Run(":3000")
 }

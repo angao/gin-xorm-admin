@@ -1,7 +1,6 @@
 package controller
 
 import (
-	"log"
 	"net/http"
 	"strconv"
 	"strings"
@@ -32,17 +31,17 @@ func (RoleController) List(c *gin.Context) {
 	}
 	roles, err := roleDao.List(roleForm)
 	if err != nil {
-		r.JSON(c.Writer, http.StatusBadRequest, gin.H{
+		r.JSON(c.Writer, http.StatusInternalServerError, gin.H{
 			"error": err,
 		})
 		return
 	}
-	log.Printf("roles: %#v\n", roles)
 	r.JSON(c.Writer, http.StatusOK, gin.H{
 		"data": roles,
 	})
 }
 
+// ToAdd to add page
 func (RoleController) ToAdd(c *gin.Context) {
 	r.HTML(c.Writer, http.StatusOK, "system/role/role_add.html", "")
 }
