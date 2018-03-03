@@ -16,7 +16,7 @@ type UserDao struct {
 
 // UserBean for form
 type UserBean struct {
-	Id         int64
+	ID         int64 `json:"Id"`
 	Avatar     string
 	Account    string
 	Name       string
@@ -24,9 +24,9 @@ type UserBean struct {
 	Sex        string
 	Email      string
 	Phone      string
-	RoleId     string `xorm:"roleid"`
+	RoleID     string `json:"RoleId" xorm:"roleid"`
 	RoleName   string
-	DeptId     int `xorm:"deptid"`
+	DeptID     int `json:"DeptId" xorm:"deptid"`
 	DeptName   string
 	Status     string
 	CreateTime string `xorm:"'createtime'"`
