@@ -25,14 +25,14 @@ func (RoleController) List(c *gin.Context) {
 	var roleForm forms.RoleForm
 	if err := c.Bind(&roleForm); err != nil {
 		r.JSON(c.Writer, http.StatusBadRequest, gin.H{
-			"error": err,
+			"error": err.Error(),
 		})
 		return
 	}
 	roles, err := roleDao.List(roleForm)
 	if err != nil {
 		r.JSON(c.Writer, http.StatusInternalServerError, gin.H{
-			"error": err,
+			"error": err.Error(),
 		})
 		return
 	}
@@ -59,14 +59,14 @@ func (RoleController) RoleTreeListByUserID(c *gin.Context) {
 	id, err := strconv.ParseInt(userID, 10, 64)
 	if err != nil {
 		r.JSON(c.Writer, http.StatusBadRequest, gin.H{
-			"error": err,
+			"error": err.Error(),
 		})
 		return
 	}
 	user, err := userDao.GetUserByID(id)
 	if err != nil {
-		r.JSON(c.Writer, http.StatusBadRequest, gin.H{
-			"error": err,
+		r.JSON(c.Writer, http.StatusInternalServerError, gin.H{
+			"error": err.Error(),
 		})
 		return
 	}
@@ -74,8 +74,8 @@ func (RoleController) RoleTreeListByUserID(c *gin.Context) {
 	if user.RoleId == "" {
 		roles, err := roleDao.QueryAllRole()
 		if err != nil {
-			r.JSON(c.Writer, http.StatusBadRequest, gin.H{
-				"error": err,
+			r.JSON(c.Writer, http.StatusInternalServerError, gin.H{
+				"error": err.Error(),
 			})
 			return
 		}
@@ -85,8 +85,8 @@ func (RoleController) RoleTreeListByUserID(c *gin.Context) {
 	roleIds := strings.Split(user.RoleId, ",")
 	roles, err := roleDao.TreeListByRoleID(roleIds)
 	if err != nil {
-		r.JSON(c.Writer, http.StatusBadRequest, gin.H{
-			"error": err,
+		r.JSON(c.Writer, http.StatusInternalServerError, gin.H{
+			"error": err.Error(),
 		})
 		return
 	}

@@ -15,7 +15,7 @@ func (MenuDao) GetMenuByRoleIds(roleIDs []string) ([]models.Menu, error) {
 	param := make(map[string]interface{})
 	param["roleIds"] = roleIDs
 	param["length"] = len(roleIDs) - 1
-	err := x.SqlTemplateClient("getMenuByRoleIds.sql", &param).Find(&menus)
+	err := x.SqlTemplateClient("menu.getByRoleIds.sql", &param).Find(&menus)
 	if err != nil {
 		return nil, err
 	}
@@ -31,4 +31,10 @@ func (MenuDao) List(menuForm forms.MenuForm) ([]models.Menu, error) {
 		return nil, err
 	}
 	return menus, nil
+}
+
+// Update update menu
+func (MenuDao) Update(menu models.Menu) error {
+	_, err := x.Table("sys_menu").Id(menu.Id).Cols("status").Update(&menu)
+	return err
 }

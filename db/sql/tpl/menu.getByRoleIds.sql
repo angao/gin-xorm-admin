@@ -41,7 +41,7 @@ INNER JOIN(
         )
 ) m3 ON m1.id = m3.id
 WHERE
-    m1.ismenu = 1
+    m1.ismenu = 1 AND m1.status = 1
 ORDER BY
     levels ,
     num ASC	

@@ -28,7 +28,7 @@ func (DeptController) List(c *gin.Context) {
 	depts, err := deptDao.List()
 	if err != nil {
 		r.JSON(c.Writer, http.StatusInternalServerError, gin.H{
-			"error": err,
+			"error": err.Error(),
 		})
 		return
 	}

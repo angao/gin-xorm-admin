@@ -38,7 +38,7 @@ func (RoleDao) QueryAllRole() ([]RoleBean, error) {
 func (RoleDao) List(roleForm forms.RoleForm) ([]RoleBean, error) {
 	var roles []RoleBean
 	param := utils.StructToMap(roleForm)
-	err := x.SqlTemplateClient("roleList.sql", &param).Find(&roles)
+	err := x.SqlTemplateClient("role.list.sql", &param).Find(&roles)
 	if err != nil {
 		fmt.Printf("%#v\n", err)
 		return nil, err

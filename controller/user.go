@@ -29,15 +29,15 @@ func (UserController) List(c *gin.Context) {
 	var userForm forms.UserForm
 	if err := c.Bind(&userForm); err != nil {
 		r.JSON(c.Writer, http.StatusBadRequest, gin.H{
-			"error": err,
+			"error": err.Error(),
 		})
 		return
 	}
 
 	users, err := userDao.List(userForm)
 	if err != nil {
-		r.JSON(c.Writer, http.StatusBadRequest, gin.H{
-			"error": err,
+		r.JSON(c.Writer, http.StatusInternalServerError, gin.H{
+			"error": err.Error(),
 		})
 		return
 	}
@@ -56,7 +56,9 @@ func (UserController) Info(c *gin.Context) {
 	if ok {
 		user, err = userDao.GetUserRole(id)
 		if err != nil {
-			log.Printf("%#v\n", err)
+			r.JSON(c.Writer, http.StatusInternalServerError, gin.H{
+				"error": err.Error(),
+			})
 			return
 		}
 		r.HTML(c.Writer, http.StatusOK, "container.html", gin.H{
@@ -66,8 +68,7 @@ func (UserController) Info(c *gin.Context) {
 		return
 	}
 	r.HTML(c.Writer, http.StatusInternalServerError, "container.html", gin.H{
-		"error": err,
-		"user":  user,
+		"error": err.Error(),
 	})
 }
 
@@ -88,12 +89,16 @@ func (UserController) ToEdit(c *gin.Context) {
 	var userDao db.UserDao
 	pid, err := strconv.ParseInt(id, 10, 64)
 	if err != nil {
-		log.Printf("%#v\n", err)
+		r.JSON(c.Writer, http.StatusInternalServerError, gin.H{
+			"error": err.Error(),
+		})
 		return
 	}
 	user, err := userDao.GetUserRole(pid)
 	if err != nil {
-		log.Printf("%#v\n", err)
+		r.JSON(c.Writer, http.StatusInternalServerError, gin.H{
+			"error": err.Error(),
+		})
 		return
 	}
 	r.HTML(c.Writer, http.StatusOK, "system/user/user_edit.html", gin.H{
@@ -114,12 +119,16 @@ func (UserController) ToRoleAssign(c *gin.Context) {
 	var userDao db.UserDao
 	pid, err := strconv.ParseInt(id, 10, 64)
 	if err != nil {
-		log.Printf("%#v\n", err)
+		r.JSON(c.Writer, http.StatusInternalServerError, gin.H{
+			"error": err.Error(),
+		})
 		return
 	}
 	user, err := userDao.GetUserByID(pid)
 	if err != nil {
-		log.Printf("%#v\n", err)
+		r.JSON(c.Writer, http.StatusInternalServerError, gin.H{
+			"error": err.Error(),
+		})
 		return
 	}
 	r.HTML(c.Writer, http.StatusOK, "system/user/user_roleassign.html", gin.H{
@@ -135,7 +144,7 @@ func (UserController) Add(c *gin.Context) {
 
 	if err := c.Bind(&userAddForm); err != nil {
 		r.JSON(c.Writer, http.StatusBadRequest, gin.H{
-			"error": err,
+			"error": err.Error(),
 		})
 		return
 	}
@@ -153,8 +162,8 @@ func (UserController) Add(c *gin.Context) {
 	randomStr := utils.RandomString(5)
 	password, err := utils.Encrypt(userAddForm.Password, randomStr)
 	if err != nil {
-		r.JSON(c.Writer, http.StatusBadRequest, gin.H{
-			"error": err,
+		r.JSON(c.Writer, http.StatusInternalServerError, gin.H{
+			"error": err.Error(),
 		})
 		return
 	}
@@ -162,12 +171,14 @@ func (UserController) Add(c *gin.Context) {
 	user.Salt = randomStr
 	err = userDao.Save(user)
 	if err != nil {
-		r.JSON(c.Writer, http.StatusBadRequest, gin.H{
-			"error": err,
+		r.JSON(c.Writer, http.StatusInternalServerError, gin.H{
+			"error": err.Error(),
 		})
 		return
 	}
-	r.JSON(c.Writer, http.StatusOK, "")
+	r.JSON(c.Writer, http.StatusOK, gin.H{
+		"message": err.Error(),
+	})
 }
 
 // Delete 删除用户
@@ -183,14 +194,14 @@ func (UserController) Delete(c *gin.Context) {
 	pid, err := strconv.ParseInt(id, 10, 64)
 	if err != nil {
 		r.JSON(c.Writer, http.StatusInternalServerError, gin.H{
-			"message": err,
+			"message": err.Error(),
 		})
 		return
 	}
 	err = userDao.Delete(pid)
 	if err != nil {
 		r.JSON(c.Writer, http.StatusInternalServerError, gin.H{
-			"message": err,
+			"message": err.Error(),
 		})
 		return
 	}
@@ -210,7 +221,7 @@ func (UserController) Reset(c *gin.Context) {
 	pid, err := strconv.ParseInt(id, 10, 64)
 	if err != nil {
 		r.JSON(c.Writer, http.StatusInternalServerError, gin.H{
-			"message": err,
+			"message": err.Error(),
 		})
 		return
 	}
@@ -218,7 +229,7 @@ func (UserController) Reset(c *gin.Context) {
 	user, err = userDao.GetUserByID(pid)
 	if err != nil {
 		r.JSON(c.Writer, http.StatusInternalServerError, gin.H{
-			"message": err,
+			"message": err.Error(),
 		})
 		return
 	}
@@ -226,7 +237,7 @@ func (UserController) Reset(c *gin.Context) {
 	password, err := utils.Encrypt("111111", user.Salt)
 	if err != nil {
 		r.JSON(c.Writer, http.StatusInternalServerError, gin.H{
-			"message": err,
+			"message": err.Error(),
 		})
 		return
 	}
@@ -234,7 +245,7 @@ func (UserController) Reset(c *gin.Context) {
 	err = userDao.Update(user)
 	if err != nil {
 		r.JSON(c.Writer, http.StatusInternalServerError, gin.H{
-			"message": err,
+			"message": err.Error(),
 		})
 		return
 	}
@@ -256,7 +267,7 @@ func (UserController) SetRole(c *gin.Context) {
 	id, err := strconv.ParseInt(userID, 10, 64)
 	if err != nil {
 		r.JSON(c.Writer, http.StatusBadRequest, gin.H{
-			"message": err,
+			"message": err.Error(),
 		})
 		return
 	}
@@ -266,8 +277,8 @@ func (UserController) SetRole(c *gin.Context) {
 	}
 	err = userDao.Update(&user)
 	if err != nil {
-		r.JSON(c.Writer, http.StatusBadRequest, gin.H{
-			"message": err,
+		r.JSON(c.Writer, http.StatusInternalServerError, gin.H{
+			"message": err.Error(),
 		})
 		return
 	}
@@ -289,7 +300,7 @@ func (UserController) Freeze(c *gin.Context) {
 	id, err := strconv.ParseInt(userID, 10, 64)
 	if err != nil {
 		r.JSON(c.Writer, http.StatusBadRequest, gin.H{
-			"message": err,
+			"message": err.Error(),
 		})
 		return
 	}
@@ -299,8 +310,8 @@ func (UserController) Freeze(c *gin.Context) {
 	}
 	err = userDao.Update(&user)
 	if err != nil {
-		r.JSON(c.Writer, http.StatusBadRequest, gin.H{
-			"message": err,
+		r.JSON(c.Writer, http.StatusInternalServerError, gin.H{
+			"message": err.Error(),
 		})
 		return
 	}
@@ -322,7 +333,7 @@ func (UserController) UnFreeze(c *gin.Context) {
 	id, err := strconv.ParseInt(userID, 10, 64)
 	if err != nil {
 		r.JSON(c.Writer, http.StatusBadRequest, gin.H{
-			"message": err,
+			"message": err.Error(),
 		})
 		return
 	}
@@ -332,8 +343,8 @@ func (UserController) UnFreeze(c *gin.Context) {
 	}
 	err = userDao.Update(&user)
 	if err != nil {
-		r.JSON(c.Writer, http.StatusBadRequest, gin.H{
-			"message": err,
+		r.JSON(c.Writer, http.StatusInternalServerError, gin.H{
+			"message": err.Error(),
 		})
 		return
 	}

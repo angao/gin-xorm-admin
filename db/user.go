@@ -101,6 +101,6 @@ func (UserDao) Delete(id int64) error {
 
 // Update user
 func (UserDao) Update(user *models.User) error {
-	_, err := x.Table("sys_user").Id(user.Id).Update(user)
+	_, err := x.Table("sys_user").Id(user.Id).Cols("status").Update(user)
 	return err
 }

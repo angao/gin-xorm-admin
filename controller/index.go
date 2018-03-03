@@ -1,7 +1,6 @@
 package controller
 
 import (
-	"log"
 	"net/http"
 	"strings"
 
@@ -37,7 +36,9 @@ func (IndexController) Home(c *gin.Context) {
 		roleIDs := strings.Split(user.User.RoleId, ",")
 		menus, err := menuDao.GetMenuByRoleIds(roleIDs)
 		if err != nil {
-			log.Printf("%#v\n", err)
+			r.JSON(c.Writer, http.StatusInternalServerError, gin.H{
+				"message": err.Error(),
+			})
 			return
 		}
 		menus = buildTree(menus)
@@ -54,7 +55,9 @@ func (IndexController) BlackBoard(c *gin.Context) {
 	var noticeDao db.NoticeDao
 	notices, err := noticeDao.List()
 	if err != nil {
-		log.Printf("BlackBoard: %#v\n", err)
+		r.JSON(c.Writer, http.StatusInternalServerError, gin.H{
+			"message": err.Error(),
+		})
 		return
 	}
 	r.HTML(c.Writer, http.StatusOK, "blackboard.html", gin.H{
