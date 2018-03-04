@@ -88,6 +88,11 @@ func Init() {
 		menuGroup.GET("/", menu.Index)
 		menuGroup.POST("/list", menu.List)
 		menuGroup.POST("/remove", menu.Remove)
+
+		menuGroup.GET("/menu_add", menu.ToAdd)
+		menuGroup.POST("/selectMenuTreeList", menu.SelectMenuTreeList)
+
+		menuGroup.GET("/menu_edit/:menuId", menu.Edit)
 	}
 	router.Run(":3000")
 }

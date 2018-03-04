@@ -71,3 +71,42 @@ func (MenuController) Remove(c *gin.Context) {
 		"message": "success",
 	})
 }
+
+// ToAdd to add menu page
+func (MenuController) ToAdd(c *gin.Context) {
+	r.HTML(c.Writer, http.StatusOK, "system/menu/menu_add.html", gin.H{})
+}
+
+// SelectMenuTreeList query menu
+func (MenuController) SelectMenuTreeList(c *gin.Context) {
+
+}
+
+// Edit update menu
+func (MenuController) Edit(c *gin.Context) {
+	menuID := c.Param("menuId")
+	if menuID == "" {
+		r.JSON(c.Writer, http.StatusBadRequest, gin.H{
+			"message": "参数错误",
+		})
+		return
+	}
+	id, err := strconv.ParseInt(menuID, 10, 64)
+	if err != nil {
+		r.JSON(c.Writer, http.StatusBadRequest, gin.H{
+			"message": err.Error(),
+		})
+		return
+	}
+	var menuDao db.MenuDao
+	menu, err := menuDao.Get(id)
+	if err != nil {
+		r.JSON(c.Writer, http.StatusInternalServerError, gin.H{
+			"message": err.Error(),
+		})
+		return
+	}
+	r.HTML(c.Writer, http.StatusOK, "system/menu/menu_edit.html", gin.H{
+		"menu": menu,
+	})
+}
