@@ -1,20 +1,17 @@
 package router
 
 import (
-	"html/template"
-
 	"github.com/angao/gin-xorm-admin/controller"
 	"github.com/angao/gin-xorm-admin/router/middlewares"
-	"github.com/angao/gin-xorm-admin/utils"
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
 )
 
 // Init 路由
-func Init() {
+func Init(port string) {
 	router := gin.New()
 
-	store := sessions.NewCookieStore([]byte("--secret--key--"))
+	store := sessions.NewCookieStore([]byte("jDIkFg6ju7kEM7DOIWGcXSLwCL6QaMZy"))
 	store.Options(sessions.Options{
 		Path:     "/",
 		HttpOnly: false,
@@ -31,10 +28,6 @@ func Init() {
 
 	router.Static("/public", "public")
 	// router.HTMLRender = utils.LoadTemplates("views")
-
-	router.SetFuncMap(template.FuncMap{
-		"formatAsDate": utils.FormatDate,
-	})
 
 	// login authentication
 	auth := new(controller.AuthController)
@@ -94,5 +87,5 @@ func Init() {
 
 		menuGroup.GET("/menu_edit/:menuId", menu.Edit)
 	}
-	router.Run(":3000")
+	router.Run(":" + port)
 }

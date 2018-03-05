@@ -2,7 +2,6 @@ package db
 
 import (
 	"errors"
-	"log"
 	"time"
 
 	"github.com/angao/gin-xorm-admin/forms"
@@ -16,7 +15,7 @@ type UserDao struct {
 
 // UserBean for form
 type UserBean struct {
-	ID         int64 `json:"Id"`
+	ID         int64 `json:"Id" xorm:"id"`
 	Avatar     string
 	Account    string
 	Name       string
@@ -37,7 +36,6 @@ func (UserDao) GetUser(account string) (*models.User, error) {
 	user := new(models.User)
 	has, err := x.Table("sys_user").Where("account = ?", account).Get(user)
 	if err != nil {
-		log.Printf("error: %#v\n", err)
 		return nil, err
 	}
 	if !has {
@@ -51,7 +49,6 @@ func (UserDao) GetUserByID(id int64) (*models.User, error) {
 	user := new(models.User)
 	has, err := x.Table("sys_user").Where("id = ?", id).Get(user)
 	if err != nil {
-		log.Printf("error: %#v\n", err)
 		return nil, err
 	}
 	if !has {
@@ -65,7 +62,6 @@ func (UserDao) GetUserRole(id int64) (*models.UserRole, error) {
 	user := new(models.UserRole)
 	has, err := x.Table("sys_user").Join("INNER", "sys_role", "sys_user.roleid = sys_role.id").Where("sys_user.id = ?", id).Get(user)
 	if err != nil {
-		log.Printf("error: %#v\n", err)
 		return nil, err
 	}
 	if !has {
@@ -80,7 +76,6 @@ func (UserDao) List(userForm forms.UserForm) ([]UserBean, error) {
 	param := utils.StructToMap(userForm)
 	err := x.SqlTemplateClient("user.all.sql", &param).Find(&users)
 	if err != nil {
-		log.Printf("error: %#v\n", err)
 		return nil, err
 	}
 	return users, nil
