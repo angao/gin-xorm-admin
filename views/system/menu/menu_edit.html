@@ -24,7 +24,7 @@
                             type="text" readonly="readonly" onclick="MenuInfoDlg.showMenuSelectTree(); return false;" 
                             style="background-color: #ffffff !important;" data-bv-field="pcodeName">
                         <i class="form-control-feedback" data-bv-icon-for="pcodeName" style="display: none;"></i>
-                        <input type="hidden" name="pcode" id="pcode" value="{{ .menu.Pcode }}"/>
+                        <input type="hidden" name="pcode" id="pcode" value="{{ .menu.Pid }}"/>
                         <div id="pcodeTreeDiv" style="position: absolute; display:none; z-index: 200; left: 81px; top: 34px;">
                             <ul id="pcodeTree" class="ztree tree-box" style="width:244px !important;">
                             </ul>

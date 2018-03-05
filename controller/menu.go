@@ -57,11 +57,10 @@ func (MenuController) Remove(c *gin.Context) {
 		})
 		return
 	}
-	menu := models.Menu{
-		Id:     id,
-		Status: 0,
-	}
-	err = menuDao.Update(menu)
+	menu, err := menuDao.Get(id)
+	menu.Status = 0
+
+	err = menuDao.Update(*menu)
 	if err != nil {
 		r.JSON(c.Writer, http.StatusInternalServerError, gin.H{
 			"message": err.Error(),
@@ -100,7 +99,7 @@ func (MenuController) SelectMenuTreeList(c *gin.Context) {
 }
 
 // Edit update menu
-func (MenuController) Edit(c *gin.Context) {
+func (MenuController) GetEdit(c *gin.Context) {
 	menuID := c.Param("menuId")
 	if menuID == "" {
 		r.JSON(c.Writer, http.StatusBadRequest, gin.H{
@@ -132,8 +131,8 @@ func (MenuController) Edit(c *gin.Context) {
 			})
 			return
 		}
-		log.Printf("%#v\n", pMenu)
 		menu.PcodeName = pMenu.Name
+		menu.Pid = pMenu.Id
 	}
 
 	r.HTML(c.Writer, http.StatusOK, "system/menu/menu_edit.html", gin.H{
@@ -150,37 +149,14 @@ func (MenuController) Add(c *gin.Context) {
 		})
 		return
 	}
-	if menu.Pcode == "" || menu.Pcode == "0" {
-		menu.Pcode = "0"
-		menu.Pcodes = "[0],"
-		menu.Levels = 1
-	}
-
-	pid, err := strconv.ParseInt(menu.Pcode, 10, 64)
+	err := menuSetPcode(&menu)
 	if err != nil {
-		r.JSON(c.Writer, http.StatusBadRequest, gin.H{
+		r.JSON(c.Writer, http.StatusInternalServerError, gin.H{
 			"message": err.Error(),
 		})
 		return
 	}
 	var menuDao db.MenuDao
-	pMenu, err := menuDao.Get(pid)
-	if err != nil {
-		r.JSON(c.Writer, http.StatusInternalServerError, gin.H{
-			"message": err.Error(),
-		})
-		return
-	}
-	if menu.Code == pMenu.Code {
-		r.JSON(c.Writer, http.StatusInternalServerError, gin.H{
-			"message": "菜单编号和父编号不能一致",
-		})
-		return
-	}
-	menu.Pcode = pMenu.Code
-	menu.Levels = pMenu.Levels + 1
-	menu.Pcodes = pMenu.Pcodes + "[" + pMenu.Code + "],"
-	menu.Status = 1
 	err = menuDao.Save(menu)
 	if err != nil {
 		r.JSON(c.Writer, http.StatusInternalServerError, gin.H{
@@ -191,4 +167,60 @@ func (MenuController) Add(c *gin.Context) {
 	r.JSON(c.Writer, http.StatusOK, gin.H{
 		"message": "success",
 	})
+}
+
+// Edit update menu
+func (MenuController) Edit(c *gin.Context) {
+	var menu models.Menu
+	if err := c.Bind(&menu); err != nil {
+		r.JSON(c.Writer, http.StatusBadRequest, gin.H{
+			"message": err.Error(),
+		})
+		return
+	}
+	err := menuSetPcode(&menu)
+	if err != nil {
+		r.JSON(c.Writer, http.StatusInternalServerError, gin.H{
+			"message": err.Error(),
+		})
+		return
+	}
+	var menuDao db.MenuDao
+	log.Printf("%#v\n", menu)
+	err = menuDao.Update(menu)
+	if err != nil {
+		r.JSON(c.Writer, http.StatusInternalServerError, gin.H{
+			"message": err.Error(),
+		})
+		return
+	}
+	r.JSON(c.Writer, http.StatusOK, gin.H{
+		"message": "success",
+	})
+}
+
+func menuSetPcode(menu *models.Menu) error {
+	if menu.Pcode == "" || menu.Pcode == "0" {
+		menu.Pcode = "0"
+		menu.Pcodes = "[0],"
+		menu.Levels = 1
+	}
+
+	pid, err := strconv.ParseInt(menu.Pcode, 10, 64)
+	if err != nil {
+		return err
+	}
+	var menuDao db.MenuDao
+	pMenu, err := menuDao.Get(pid)
+	if err != nil {
+		return err
+	}
+	if menu.Code == pMenu.Code {
+		return err
+	}
+	menu.Pcode = pMenu.Code
+	menu.Levels = pMenu.Levels + 1
+	menu.Pcodes = pMenu.Pcodes + "[" + pMenu.Code + "],"
+	menu.Status = 1
+	return nil
 }

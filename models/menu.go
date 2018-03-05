@@ -3,13 +3,14 @@ package models
 // Menu 菜单权限
 type Menu struct {
 	// Id 主键
-	Id int64 `json:"id"`
+	Id int64 `json:"id" form:"id"`
 	// Code 菜单编号
 	Code string `json:"code" form:"code"`
 	// Pcode 菜单父编号
 	Pcode string `json:"pcode" form:"pcode"`
 	// PcodeName 父菜单名称
 	PcodeName string `json:"pcodeName" xorm:"-"`
+	Pid       int64  `json:"pid" xorm:"-"`
 	// Pcodes 当前菜单的所有父菜单编号
 	Pcodes string `json:"pcodes"`
 	// Name 菜单名称

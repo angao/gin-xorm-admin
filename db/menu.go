@@ -46,7 +46,7 @@ func (MenuDao) List(menuForm forms.MenuForm) ([]models.Menu, error) {
 
 // Update update menu
 func (MenuDao) Update(menu models.Menu) error {
-	_, err := x.Table("sys_menu").Id(menu.Id).Cols("status").Update(&menu)
+	_, err := x.Table("sys_menu").Id(menu.Id).Cols(cols...).Update(&menu)
 	return err
 }
 

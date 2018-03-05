@@ -86,7 +86,8 @@ func Init(port string) {
 		menuGroup.POST("/add", menu.Add)
 		menuGroup.POST("/selectMenuTreeList", menu.SelectMenuTreeList)
 
-		menuGroup.GET("/menu_edit/:menuId", menu.Edit)
+		menuGroup.GET("/menu_edit/:menuId", menu.GetEdit)
+		menuGroup.POST("/edit", menu.Edit)
 	}
 	router.Run(":" + port)
 }
