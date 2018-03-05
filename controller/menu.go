@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"log"
 	"net/http"
 	"strconv"
 
@@ -122,6 +123,19 @@ func (MenuController) Edit(c *gin.Context) {
 		})
 		return
 	}
+
+	if menu.Pcode != "0" {
+		pMenu, err := menuDao.GetByPcode(menu.Pcode)
+		if err != nil {
+			r.JSON(c.Writer, http.StatusInternalServerError, gin.H{
+				"message": err.Error(),
+			})
+			return
+		}
+		log.Printf("%#v\n", pMenu)
+		menu.PcodeName = pMenu.Name
+	}
+
 	r.HTML(c.Writer, http.StatusOK, "system/menu/menu_edit.html", gin.H{
 		"menu": menu,
 	})

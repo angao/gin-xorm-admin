@@ -8,6 +8,9 @@ import (
 	"github.com/angao/gin-xorm-admin/utils"
 )
 
+// menu column
+var cols = []string{"id", "code", "pcode", "pcodes", "name", "icon", "url", "num", "levels", "ismenu", "tips", "status", "isopen"}
+
 // MenuDao 菜单操作
 type MenuDao struct{}
 
@@ -25,8 +28,8 @@ func (MenuDao) GetMenuByRoleIds(roleIDs []string) ([]models.Menu, error) {
 }
 
 // List query menu
-func (MenuDao) List(menuForm forms.MenuForm) ([]models.MenuBean, error) {
-	var menus []models.MenuBean
+func (MenuDao) List(menuForm forms.MenuForm) ([]models.Menu, error) {
+	var menus []models.Menu
 	param := utils.StructToMap(menuForm)
 	err := x.SqlTemplateClient("menu.list.sql", &param).Find(&menus)
 	if err != nil {
@@ -45,7 +48,20 @@ func (MenuDao) Update(menu models.Menu) error {
 func (MenuDao) Get(id int64) (*models.Menu, error) {
 	menu := new(models.Menu)
 	menu.Id = id
-	has, err := x.Table("sys_menu").Get(menu)
+	has, err := x.Table("sys_menu").Cols(cols...).Get(menu)
+	if err != nil {
+		return nil, err
+	}
+	if !has {
+		return nil, errors.New("menu has not found")
+	}
+	return menu, nil
+}
+
+// GetByPcode get menu by pcode
+func (MenuDao) GetByPcode(pcode string) (*models.Menu, error) {
+	menu := new(models.Menu)
+	has, err := x.Table("sys_menu").Cols(cols...).Where("code = ?", pcode).Get(menu)
 	if err != nil {
 		return nil, err
 	}

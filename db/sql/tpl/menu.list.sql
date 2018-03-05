@@ -1,16 +1,16 @@
 SELECT
 	m.id,
-	m.CODE,
+	m.code,
 	m.pcode,
 	m.pcodes,
-	m.NAME,
+	m.name,
 	m.icon,
 	m.url,
 	m.num,
 	m.levels,
-	( CASE WHEN m.ismenu = 1 THEN '是' ELSE '否' END ) AS isMenuName,
+	( CASE WHEN m.ismenu = 1 THEN '是' ELSE '否' END ) AS is_menu_name,
 	m.tips,
-	( CASE WHEN m.STATUS = 1 THEN '启用' ELSE '不启用' END ) AS statusName,
+	( CASE WHEN m.STATUS = 1 THEN '启用' ELSE '不启用' END ) AS status_name,
 	m.isopen 
 FROM
 	`sys_menu` m
