@@ -83,6 +83,7 @@ func Init(port string) {
 		menuGroup.POST("/remove", menu.Remove)
 
 		menuGroup.GET("/menu_add", menu.ToAdd)
+		menuGroup.POST("/add", menu.Add)
 		menuGroup.POST("/selectMenuTreeList", menu.SelectMenuTreeList)
 
 		menuGroup.GET("/menu_edit/:menuId", menu.Edit)

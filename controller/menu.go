@@ -140,3 +140,55 @@ func (MenuController) Edit(c *gin.Context) {
 		"menu": menu,
 	})
 }
+
+// Add add a menu
+func (MenuController) Add(c *gin.Context) {
+	var menu models.Menu
+	if err := c.Bind(&menu); err != nil {
+		r.JSON(c.Writer, http.StatusBadRequest, gin.H{
+			"message": err.Error(),
+		})
+		return
+	}
+	if menu.Pcode == "" || menu.Pcode == "0" {
+		menu.Pcode = "0"
+		menu.Pcodes = "[0],"
+		menu.Levels = 1
+	}
+
+	pid, err := strconv.ParseInt(menu.Pcode, 10, 64)
+	if err != nil {
+		r.JSON(c.Writer, http.StatusBadRequest, gin.H{
+			"message": err.Error(),
+		})
+		return
+	}
+	var menuDao db.MenuDao
+	pMenu, err := menuDao.Get(pid)
+	if err != nil {
+		r.JSON(c.Writer, http.StatusInternalServerError, gin.H{
+			"message": err.Error(),
+		})
+		return
+	}
+	if menu.Code == pMenu.Code {
+		r.JSON(c.Writer, http.StatusInternalServerError, gin.H{
+			"message": "菜单编号和父编号不能一致",
+		})
+		return
+	}
+	menu.Pcode = pMenu.Code
+	menu.Levels = pMenu.Levels + 1
+	menu.Pcodes = pMenu.Pcodes + "[" + pMenu.Code + "],"
+	menu.Status = 1
+	err = menuDao.Save(menu)
+	if err != nil {
+		r.JSON(c.Writer, http.StatusInternalServerError, gin.H{
+			"message": err.Error(),
+		})
+		return
+	}
+	r.JSON(c.Writer, http.StatusOK, gin.H{
+		"message": "success",
+	})
+}

@@ -14,6 +14,12 @@ var cols = []string{"id", "code", "pcode", "pcodes", "name", "icon", "url", "num
 // MenuDao 菜单操作
 type MenuDao struct{}
 
+// Save a menu
+func (MenuDao) Save(menu models.Menu) error {
+	_, err := x.Table("sys_menu").Cols(cols...).Insert(&menu)
+	return err
+}
+
 // GetMenuByRoleIds 根据角色查询所属菜单
 func (MenuDao) GetMenuByRoleIds(roleIDs []string) ([]models.Menu, error) {
 	var menus []models.Menu
