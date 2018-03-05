@@ -3,6 +3,7 @@ package db
 import (
 	"fmt"
 	"log"
+	"time"
 
 	"github.com/go-ini/ini"
 	//
@@ -46,6 +47,12 @@ func init() {
 		log.Printf("sql parse error: %#v\n", err)
 	}
 
-	x.Ping()
+	// 30minute ping db to keep connection
+	timer := time.NewTicker(time.Minute * 30)
+	go func(x *xorm.Engine) {
+		for _ = range timer.C {
+			x.Ping()
+		}
+	}(x)
 	// x.ShowSQL(true)
 }
