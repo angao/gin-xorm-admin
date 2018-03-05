@@ -1,7 +1,6 @@
 package controller
 
 import (
-	"log"
 	"net/http"
 	"strconv"
 
@@ -98,8 +97,8 @@ func (MenuController) SelectMenuTreeList(c *gin.Context) {
 	r.JSON(c.Writer, http.StatusOK, menus)
 }
 
-// Edit update menu
-func (MenuController) GetEdit(c *gin.Context) {
+// ToEdit update menu
+func (MenuController) ToEdit(c *gin.Context) {
 	menuID := c.Param("menuId")
 	if menuID == "" {
 		r.JSON(c.Writer, http.StatusBadRequest, gin.H{
@@ -186,7 +185,6 @@ func (MenuController) Edit(c *gin.Context) {
 		return
 	}
 	var menuDao db.MenuDao
-	log.Printf("%#v\n", menu)
 	err = menuDao.Update(menu)
 	if err != nil {
 		r.JSON(c.Writer, http.StatusInternalServerError, gin.H{
