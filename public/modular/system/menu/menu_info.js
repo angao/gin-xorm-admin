@@ -155,7 +155,7 @@ MenuInfoDlg.onClickDept = function (e, treeId, treeNode) {
  * 显示父级菜单选择的树
  */
 MenuInfoDlg.showMenuSelectTree = function () {
-    Feng.showInputTree("pcodeName", "pcodeTreeDiv", 15, 34);
+    Feng.showInputTree("pcodeName", "pcodeTreeDiv", 81, 34);
 };
 
 $(function () {

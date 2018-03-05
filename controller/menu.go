@@ -79,7 +79,23 @@ func (MenuController) ToAdd(c *gin.Context) {
 
 // SelectMenuTreeList query menu
 func (MenuController) SelectMenuTreeList(c *gin.Context) {
+	var menuDao db.MenuDao
 
+	menus, err := menuDao.SelectMenuTreeList()
+	if err != nil {
+		r.JSON(c.Writer, http.StatusInternalServerError, gin.H{
+			"message": err.Error(),
+		})
+		return
+	}
+	treeNode := models.ZTreeNode{
+		ID:   0,
+		Name: "顶级",
+		Open: true,
+		Pid:  0,
+	}
+	menus = append(menus, treeNode)
+	r.JSON(c.Writer, http.StatusOK, menus)
 }
 
 // Edit update menu

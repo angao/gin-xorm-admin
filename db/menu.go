@@ -54,3 +54,13 @@ func (MenuDao) Get(id int64) (*models.Menu, error) {
 	}
 	return menu, nil
 }
+
+// SelectMenuTreeList query menu
+func (MenuDao) SelectMenuTreeList() ([]models.ZTreeNode, error) {
+	var menus []models.ZTreeNode
+	err := x.SqlTemplateClient("menu.tree.sql").Find(&menus)
+	if err != nil {
+		return nil, err
+	}
+	return menus, nil
+}

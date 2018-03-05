@@ -1,9 +1,8 @@
 package db
 
 import (
-	"fmt"
-
 	"github.com/angao/gin-xorm-admin/forms"
+	"github.com/angao/gin-xorm-admin/models"
 	"github.com/angao/gin-xorm-admin/utils"
 )
 
@@ -28,7 +27,6 @@ func (RoleDao) QueryAllRole() ([]RoleBean, error) {
 	var roles []RoleBean
 	err := x.SqlMapClient("queryAllRole").Find(&roles)
 	if err != nil {
-		fmt.Printf("%#v\n", err)
 		return nil, err
 	}
 	return roles, nil
@@ -40,21 +38,19 @@ func (RoleDao) List(roleForm forms.RoleForm) ([]RoleBean, error) {
 	param := utils.StructToMap(roleForm)
 	err := x.SqlTemplateClient("role.list.sql", &param).Find(&roles)
 	if err != nil {
-		fmt.Printf("%#v\n", err)
 		return nil, err
 	}
 	return roles, nil
 }
 
 // TreeListByRoleID query role by roleID
-func (RoleDao) TreeListByRoleID(roleIds []string) ([]RoleBean, error) {
-	var roles []RoleBean
+func (RoleDao) TreeListByRoleID(roleIds []string) ([]models.ZTreeNode, error) {
+	var roles []models.ZTreeNode
 	param := make(map[string]interface{})
 	param["roleIds"] = roleIds
 	param["length"] = len(roleIds) - 1
-	err := x.SqlTemplateClient("treeListByRoleID.sql", &param).Find(&roles)
+	err := x.SqlTemplateClient("role.treeByRoleId.sql", &param).Find(&roles)
 	if err != nil {
-		fmt.Printf("%#v\n", err)
 		return nil, err
 	}
 	return roles, nil

@@ -19,11 +19,15 @@
 
 					<div class="input-group">
 						<div class="input-group-addon">父级编号</div>
+						<input class="form-control" id="pcodeName" name="pcodeName" 
+							type="text" readonly="readonly" onclick="MenuInfoDlg.showMenuSelectTree(); return false;" 
+							style="background-color: #ffffff !important;" data-bv-field="pcodeName">
+						<i class="form-control-feedback" data-bv-icon-for="pcodeName" style="display: none;"></i>
 						<input type="hidden" name="pcode" id="pcode"/>
-						<input type="text" id="pcodeName" name="pcodeName" readonly="readonly"
-							onclick="MenuInfoDlg.showMenuSelectTree(); return false;" class="form-control"
-							style="background-color: #ffffff !important;"
-							selectFlag="true" selectId="pcodeTreeDiv" selectTreeId="pcodeTree" selectStyle="width:244px !important;"/>
+						<div id="pcodeTreeDiv" style="position: absolute; display:none; z-index: 200; left: 81px; top: 34px;">
+							<ul id="pcodeTree" class="ztree tree-box" style="width:244px !important;">
+							</ul>
+						</div>
 					</div>
 					<div class="hr-line-dashed"></div>
 

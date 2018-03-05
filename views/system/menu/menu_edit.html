@@ -2,27 +2,62 @@
 <div class="ibox float-e-margins">
     <div class="ibox-content">
         <div class="form-horizontal" id="menuInfoForm">
-            <input type="hidden" id="id" value="${menu.id}">
-            <input type="hidden" id="ismenuValue" value="${menu.ismenu}">
+            <input type="hidden" id="id" value="{{ .menu.Id }}">
+            <input type="hidden" id="ismenuValue" value="{{ .menu.IsMenu }}">
             <div class="row">
                 <div class="col-sm-6 b-r">
-                    <#input id="name" name="名称" value="${menu.name}" underline="true" />
-                    <#input id="code" name="菜单编号" value="${menu.code}" underline="true" />
-                    <#input id="pcodeName" name="父级编号" value="${menu.pcodeName}" underline="true"
-                            hidden="pcode" readonly="readonly" hiddenValue="${menu.pcode}"
-                            clickFun="MenuInfoDlg.showMenuSelectTree(); return false;"
-                            style="background-color: #ffffff !important;"
-                            selectFlag="true" selectId="pcodeTreeDiv" selectTreeId="pcodeTree" selectStyle="width:244px !important;"/>
-                    <#select id="ismenu" name="是否是菜单">
-                        <option value="1">是</option>
-                        <option value="0">不是</option>
-                    </#select>
+                    <div class="input-group">
+                        <div class="input-group-addon">名称</div>
+                        <input type="text" class="form-control" value="{{ .menu.Name }}" name="name" id="name" placeholder="名称">
+                    </div>
+                    <div class="hr-line-dashed"></div>
 
+                    <div class="input-group">
+                        <div class="input-group-addon">菜单编号</div>
+                        <input type="text" class="form-control" value="{{ .menu.Code }}" name="code" id="code" placeholder="菜单编号">
+                    </div>
+                    <div class="hr-line-dashed"></div>
+
+                    <div class="input-group">
+                        <div class="input-group-addon">父级编号</div>
+                        <input class="form-control" id="pcodeName" name="pcodeName" value="{{ .menu.Pcode }}"
+                            type="text" readonly="readonly" onclick="MenuInfoDlg.showMenuSelectTree(); return false;" 
+                            style="background-color: #ffffff !important;" data-bv-field="pcodeName">
+                        <i class="form-control-feedback" data-bv-icon-for="pcodeName" style="display: none;"></i>
+                        <input type="hidden" name="pcode" id="pcode" value="{{ .menu.Pcode }}"/>
+                        <div id="pcodeTreeDiv" style="position: absolute; display:none; z-index: 200; left: 81px; top: 34px;">
+                            <ul id="pcodeTree" class="ztree tree-box" style="width:244px !important;">
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="hr-line-dashed"></div>
+
+                    <div class="input-group">
+                        <div class="input-group-addon">是否是菜单</div>
+                        <select id="ismenu" name="ismenu" class="form-control">
+                            <option value="1" {{if eq .menu.IsMenu 1}}selected{{ end }}>是</option>
+                            <option value="0" {{if eq .menu.IsMenu 0}}selected{{ end }}>不是</option>
+                        </select>
+                    </div>
                 </div>
                 <div class="col-sm-6">
-                    <#input id="url" name="请求地址" value="${menu.url}" underline="true" />
-                    <#input id="num" name="排序" value="${menu.num}" underline="true" />
-                    <#input id="icon" name="图标" underline="false" value="${menu.icon}"/>
+                    <div class="input-group">
+                        <div class="input-group-addon">请求地址</div>
+                        <input type="text" class="form-control" value="{{ .menu.URL }}" name="url" id="url" placeholder="请求地址">
+                    </div>
+                    <div class="hr-line-dashed"></div>
+
+                    <div class="input-group">
+                        <div class="input-group-addon">排序</div>
+                        <input type="text" class="form-control" value="{{ .menu.Num }}" name="num" id="num" placeholder="排序">
+                    </div>
+                    <div class="hr-line-dashed"></div>
+
+                    <div class="input-group">
+                    <div class="input-group-addon">图标</div>
+                        <input type="text" class="form-control" value="{{ .menu.Icon }}" name="icon" id="icon" placeholder="图标">
+                    </div>
                 </div>
             </div>
 
