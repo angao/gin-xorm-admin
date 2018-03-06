@@ -1,10 +1,9 @@
 package controller
 
 import (
+	"fmt"
 	"net/http"
 	"strings"
-
-	"fmt"
 
 	"github.com/angao/gin-xorm-admin/db"
 	"github.com/angao/gin-xorm-admin/models"
