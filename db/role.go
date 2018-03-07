@@ -9,32 +9,19 @@ import (
 // RoleDao operate role
 type RoleDao struct{}
 
-// RoleBean for ztree
-type RoleBean struct {
-	ID       int    `xorm:"id" json:"id"`
-	Pid      int    `xorm:"pId" json:"pId"`
-	PName    string `xorm:"p_name" json:"pName"`
-	Deptid   int    `xorm:"deptid" json:"deptId"`
-	Tips     string `xorm:"tips" json:"tips"`
-	DeptName string `xorm:"dept_name" json:"dept_name"`
-	Name     string `json:"name"`
-	Open     bool   `xorm:"open" json:"open"`
-	Checked  bool   `json:"checked"`
-}
-
 // QueryAllRole query all role
-func (RoleDao) QueryAllRole() ([]RoleBean, error) {
-	var roles []RoleBean
-	err := x.SqlMapClient("queryAllRole").Find(&roles)
+func (RoleDao) QueryAllRole() ([]models.ZTreeNode, error) {
+	var nodes []models.ZTreeNode
+	err := x.SqlMapClient("queryAllRole").Find(&nodes)
 	if err != nil {
 		return nil, err
 	}
-	return roles, nil
+	return nodes, nil
 }
 
 // List query all role containes dept
-func (RoleDao) List(roleForm forms.RoleForm) ([]RoleBean, error) {
-	var roles []RoleBean
+func (RoleDao) List(roleForm forms.RoleForm) ([]models.Role, error) {
+	var roles []models.Role
 	param := utils.StructToMap(roleForm)
 	err := x.SqlTemplateClient("role.list.sql", &param).Find(&roles)
 	if err != nil {
@@ -46,7 +33,7 @@ func (RoleDao) List(roleForm forms.RoleForm) ([]RoleBean, error) {
 // TreeListByRoleID query role by roleID
 func (RoleDao) TreeListByRoleID(roleIds []string) ([]models.ZTreeNode, error) {
 	var roles []models.ZTreeNode
-	param := make(map[string]interface{})
+	param := make(map[string]interface{}, 2)
 	param["roleIds"] = roleIds
 	param["length"] = len(roleIds) - 1
 	err := x.SqlTemplateClient("role.treeByRoleId.sql", &param).Find(&roles)

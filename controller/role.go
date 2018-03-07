@@ -36,9 +36,7 @@ func (RoleController) List(c *gin.Context) {
 		})
 		return
 	}
-	r.JSON(c.Writer, http.StatusOK, gin.H{
-		"data": roles,
-	})
+	r.JSON(c.Writer, http.StatusOK, roles)
 }
 
 // ToAdd to add page
