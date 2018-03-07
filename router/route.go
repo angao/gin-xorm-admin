@@ -91,6 +91,8 @@ func Init(port string) {
 
 		roleGroup.POST("/remove", role.Remove)
 
+		roleGroup.GET("/role_assign/:roleId", role.ToAssign)
+
 		roleGroup.POST("/roleTreeList", role.TreeList)
 		roleGroup.POST("/roleTreeListByUserId/:userId", role.RoleTreeListByUserID)
 	}

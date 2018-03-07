@@ -67,6 +67,35 @@ func (RoleController) Add(c *gin.Context) {
 	})
 }
 
+// ToEdit to edit page
+func (RoleController) ToEdit(c *gin.Context) {
+	roleID := c.Param("roleId")
+	if roleID == "" {
+		r.JSON(c.Writer, http.StatusBadRequest, gin.H{
+			"message": "参数错误",
+		})
+		return
+	}
+	id, err := strconv.ParseInt(roleID, 10, 64)
+	if err != nil {
+		r.JSON(c.Writer, http.StatusBadRequest, gin.H{
+			"message": err.Error(),
+		})
+		return
+	}
+	var roleDao db.RoleDao
+	role, err := roleDao.Get(id)
+	if err != nil {
+		r.JSON(c.Writer, http.StatusInternalServerError, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
+	r.HTML(c.Writer, http.StatusOK, "system/role/role_edit.html", gin.H{
+		"role": role,
+	})
+}
+
 // Edit save role
 func (RoleController) Edit(c *gin.Context) {
 	var role models.Role
@@ -109,6 +138,35 @@ func (RoleController) Remove(c *gin.Context) {
 	}
 	r.JSON(c.Writer, http.StatusOK, gin.H{
 		"message": "success",
+	})
+}
+
+// ToAssign to assign page
+func (RoleController) ToAssign(c *gin.Context) {
+	roleID := c.Param("roleId")
+	if roleID == "" {
+		r.JSON(c.Writer, http.StatusBadRequest, gin.H{
+			"message": "参数错误",
+		})
+		return
+	}
+	id, err := strconv.ParseInt(roleID, 10, 64)
+	if err != nil {
+		r.JSON(c.Writer, http.StatusBadRequest, gin.H{
+			"message": err.Error(),
+		})
+		return
+	}
+	var roleDao db.RoleDao
+	role, err := roleDao.Get(id)
+	if err != nil {
+		r.JSON(c.Writer, http.StatusInternalServerError, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
+	r.HTML(c.Writer, http.StatusOK, "system/role/role_assign.html", gin.H{
+		"role": role,
 	})
 }
 
@@ -177,33 +235,4 @@ func (RoleController) TreeList(c *gin.Context) {
 		Checked: true,
 	})
 	r.JSON(c.Writer, http.StatusOK, nodes)
-}
-
-// ToEdit to edit page
-func (RoleController) ToEdit(c *gin.Context) {
-	roleID := c.Param("roleId")
-	if roleID == "" {
-		r.JSON(c.Writer, http.StatusBadRequest, gin.H{
-			"message": "参数错误",
-		})
-		return
-	}
-	id, err := strconv.ParseInt(roleID, 10, 64)
-	if err != nil {
-		r.JSON(c.Writer, http.StatusBadRequest, gin.H{
-			"message": err.Error(),
-		})
-		return
-	}
-	var roleDao db.RoleDao
-	role, err := roleDao.Get(id)
-	if err != nil {
-		r.JSON(c.Writer, http.StatusInternalServerError, gin.H{
-			"error": err.Error(),
-		})
-		return
-	}
-	r.HTML(c.Writer, http.StatusOK, "system/role/role_edit.html", gin.H{
-		"role": role,
-	})
 }

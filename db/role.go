@@ -29,6 +29,11 @@ func (RoleDao) List(roleForm forms.RoleForm) ([]models.Role, error) {
 	if err != nil {
 		return nil, err
 	}
+	for _, role := range roles {
+		if role.PName == "" {
+			role.PName = "--"
+		}
+	}
 	return roles, nil
 }
 
@@ -44,6 +49,9 @@ func (RoleDao) Get(id int64) (models.Role, error) {
 	}
 	if !has {
 		return role, errors.New("role not found")
+	}
+	if role.PName == "" {
+		role.PName = "--"
 	}
 	return role, nil
 }
