@@ -84,9 +84,15 @@ func Init(port string) {
 		roleGroup.GET("/", role.Index)
 		roleGroup.POST("/list", role.List)
 		roleGroup.GET("/role_add", role.ToAdd)
-		roleGroup.POST("/roleTreeListByUserId/:userId", role.RoleTreeListByUserID)
+		roleGroup.POST("/add", role.Add)
 
-		roleGroup.POST("/roleTreeList")
+		roleGroup.GET("/role_edit/:roleId", role.ToEdit)
+		roleGroup.POST("/edit", role.Edit)
+
+		roleGroup.POST("/remove", role.Remove)
+
+		roleGroup.POST("/roleTreeList", role.TreeList)
+		roleGroup.POST("/roleTreeListByUserId/:userId", role.RoleTreeListByUserID)
 	}
 
 	menu := new(controller.MenuController)

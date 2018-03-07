@@ -1,6 +1,8 @@
 package db
 
 import (
+	"errors"
+
 	"github.com/angao/gin-xorm-admin/forms"
 	"github.com/angao/gin-xorm-admin/models"
 	"github.com/angao/gin-xorm-admin/utils"
@@ -28,6 +30,41 @@ func (RoleDao) List(roleForm forms.RoleForm) ([]models.Role, error) {
 		return nil, err
 	}
 	return roles, nil
+}
+
+// Get query one role
+func (RoleDao) Get(id int64) (models.Role, error) {
+	var role models.Role
+	param := map[string]interface{}{
+		"Id": id,
+	}
+	has, err := x.SqlTemplateClient("role.list.sql", &param).Get(&role)
+	if err != nil {
+		return role, err
+	}
+	if !has {
+		return role, errors.New("role not found")
+	}
+	return role, nil
+}
+
+// Save role
+func (RoleDao) Save(role models.Role) error {
+	_, err := x.Insert(&role)
+	return err
+}
+
+// Update role
+func (RoleDao) Update(role models.Role) error {
+	_, err := x.Id(role.Id).Update(&role)
+	return err
+}
+
+//Delete role
+func (RoleDao) Delete(id int64) error {
+	role := new(models.Role)
+	_, err := x.Id(id).Delete(role)
+	return err
 }
 
 // TreeListByRoleID query role by roleID

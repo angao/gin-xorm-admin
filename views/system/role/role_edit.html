@@ -1,47 +1,83 @@
- @layout("/common/_container.html"){
+{{ define "system/role/role_edit.html" }}
 <div class="ibox float-e-margins">
 	<div class="ibox-content">
-		<div class="form-horizontal" id="roleInfoForm">
-		
-			<input type="hidden" id="id" value="${role.id}">
-
+		<div class="form-horizontal bv-form" id="roleInfoForm" novalidate="novalidate">
+			<button type="submit" class="bv-hidden-submit" style="display: none; width: 0px; height: 0px;"></button>
+			<input type="hidden" id="id" value="{{ .role.Id }}">
 			<div class="row">
 				<div class="col-sm-6 b-r">
-					<#input id="name" name="角色名称" underline="true" value="${role.name}"/>
-					<#input id="pName" name="上级名称" underline="true" hidden="pid" hiddenValue="${role.pid}" readonly="readonly" value="${pName}"
-							clickFun="RolInfoDlg.showPNameSelectTree(); return false;"
-							style="background-color: #ffffff !important;"/>
-					<#input id="deptName" name="部门名称" hidden="deptid" hiddenValue="${role.deptid}" readonly="readonly" value="${deptName}"
-							clickFun="RolInfoDlg.showDeptSelectTree(); return false;"
-							style="background-color: #ffffff !important;"/>
+					<div class="form-group has-feedback">
+						<label class="col-sm-3 control-label">角色名称</label>
+						<div class="col-sm-9">
+							<input class="form-control" id="name" name="name" value="{{ .role.Name }}" type="text" data-bv-field="name">
+							<i class="form-control-feedback" data-bv-icon-for="name" style="display: none;"></i>
+							<small class="help-block" data-bv-validator="notEmpty" data-bv-for="name" data-bv-result="NOT_VALIDATED" style="display: none;">用户名不能为空</small>
+						</div>
+					</div>
+					<div class="hr-line-dashed"></div>
+					<div class="form-group has-feedback">
+						<label class="col-sm-3 control-label">上级名称</label>
+						<div class="col-sm-9">
+							<input class="form-control" id="pName" name="pName" value="{{ .role.PName }}" type="text" readonly="readonly" onclick="RolInfoDlg.showPNameSelectTree(); return false;"
+								style="background-color: #ffffff !important;" data-bv-field="pName">
+							<i class="form-control-feedback" data-bv-icon-for="pName" style="display: none;"></i>
+							<input class="form-control" type="hidden" id="pid" value="{{ .role.Pid }}">
+							<small class="help-block" data-bv-validator="notEmpty" data-bv-for="pName" data-bv-result="NOT_VALIDATED" style="display: none;">父级名称不能为空</small>
+						</div>
+					</div>
+					<div class="hr-line-dashed"></div>
+					<div class="form-group">
+						<label class="col-sm-3 control-label">部门名称</label>
+						<div class="col-sm-9">
+							<input class="form-control" id="deptName" name="deptName" value="{{ .role.DeptName }}" type="text" readonly="readonly" onclick="RolInfoDlg.showDeptSelectTree(); return false;"
+								style="background-color: #ffffff !important;">
+							<input class="form-control" type="hidden" id="deptid" value="{{ .role.DeptID }}">
+						</div>
+					</div>
 				</div>
 				<div class="col-sm-6">
-					<#input id="tips" name="别名" underline="true" value="${role.tips}"/>
-					<#input id="num" name="排序" value="${role.num}"/>
+					<div class="form-group has-feedback">
+						<label class="col-sm-3 control-label">别名</label>
+						<div class="col-sm-9">
+							<input class="form-control" id="tips" name="tips" value="{{ .role.Tips }}" type="text" data-bv-field="tips">
+							<i class="form-control-feedback" data-bv-icon-for="tips" style="display: none;"></i>
+							<small class="help-block" data-bv-validator="notEmpty" data-bv-for="tips" data-bv-result="NOT_VALIDATED" style="display: none;">别名不能为空</small>
+						</div>
+					</div>
+					<div class="hr-line-dashed"></div>
+					<div class="form-group">
+						<label class="col-sm-3 control-label">排序</label>
+						<div class="col-sm-9">
+							<input class="form-control" id="num" name="num" value="{{ .role.Num }}" type="text">
+						</div>
+					</div>
 				</div>
 			</div>
-
+		
 			<!-- 这是部门下拉框 -->
-			<div id="deptContent" class="menuContent"
-				style="display: none; position: absolute; z-index: 200;">
-				<ul id="deptTree" class="ztree tree-box" style="width: 250px !important;"></ul>
+			<div id="deptContent" class="menuContent" style="display: none; position: absolute; z-index: 200;">
+				<ul id="deptTree" class="ztree tree-box" style="width: 250px !important;">
+				</ul>
 			</div>
-			
+		
 			<!-- 这是父级菜单下拉框 -->
-			<div id="pNameContent" class="menuContent"
-				style="display: none; position: absolute; z-index: 200;">
-				<ul id="pNameTree" class="ztree tree-box" style="width: 250px !important;"></ul>
+			<div id="pNameContent" class="menuContent" style="display: none; position: absolute; z-index: 200;">
+				<ul id="pNameTree" class="ztree tree-box" style="width: 250px !important;">
+				</ul>
 			</div>
-
+		
 			<div class="row btn-group-m-t">
 				<div class="col-sm-10">
-					<#button btnCss="info" name="提交" id="ensure" icon="fa-check" clickFun="RolInfoDlg.editSubmit()"/>
-					<#button btnCss="danger" name="取消" id="cancel" icon="fa-eraser" clickFun="RolInfoDlg.close()"/>
+					<button type="button" class="btn btn-info " onclick="RolInfoDlg.editSubmit()" id="ensure">
+						<i class="fa fa-check"></i>&nbsp;提交
+					</button>
+					<button type="button" class="btn btn-danger " onclick="RolInfoDlg.close()" id="cancel">
+						<i class="fa fa-eraser"></i>&nbsp;取消
+					</button>
 				</div>
 			</div>
 		</div>
-
 	</div>
 </div>
-<script src="${ctxPath}/static/modular/system/role/role_info.js"></script>
-@}
+<script src="/public/modular/system/role/role_info.js"></script>
+{{ end }}
