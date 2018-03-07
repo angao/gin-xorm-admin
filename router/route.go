@@ -46,6 +46,7 @@ func Init(port string) {
 		userGroup.GET("/", user.Home)
 		userGroup.POST("/list", user.List)
 		userGroup.GET("/user_info", user.Info)
+		userGroup.GET("/user_chpwd", user.ToChangePasswd)
 		userGroup.GET("/user_add", user.ToAdd)
 		userGroup.GET("/user_edit/:id", user.ToEdit)
 		userGroup.GET("/role_assign/:id", user.ToRoleAssign)
@@ -56,6 +57,7 @@ func Init(port string) {
 		userGroup.POST("/freeze", user.Freeze)
 		userGroup.POST("/unfreeze", user.UnFreeze)
 		userGroup.POST("/setRole", user.SetRole)
+		userGroup.POST("/changePwd", user.ChangePwd)
 	}
 
 	// dept /dept/

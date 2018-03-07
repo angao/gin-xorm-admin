@@ -1,7 +1,6 @@
 package controller
 
 import (
-	"log"
 	"net/http"
 	"strconv"
 
@@ -61,13 +60,13 @@ func (UserController) Info(c *gin.Context) {
 			})
 			return
 		}
-		r.HTML(c.Writer, http.StatusOK, "container.html", gin.H{
+		r.HTML(c.Writer, http.StatusOK, "system/user/user_view.html", gin.H{
 			"user":     user.User,
 			"roleName": user.Role.Name,
 		})
 		return
 	}
-	r.HTML(c.Writer, http.StatusInternalServerError, "container.html", gin.H{
+	r.HTML(c.Writer, http.StatusInternalServerError, "system/user/user_view.html", gin.H{
 		"error": err.Error(),
 	})
 }
@@ -140,7 +139,6 @@ func (UserController) ToRoleAssign(c *gin.Context) {
 func (UserController) Add(c *gin.Context) {
 	var userDao db.UserDao
 	var userAddForm forms.UserAddForm
-	var user models.User
 
 	if err := c.Bind(&userAddForm); err != nil {
 		r.JSON(c.Writer, http.StatusBadRequest, gin.H{
@@ -148,27 +146,29 @@ func (UserController) Add(c *gin.Context) {
 		})
 		return
 	}
-	log.Printf("user: %#v\n", userAddForm)
 	if userAddForm.Password != userAddForm.RePassword {
 		r.JSON(c.Writer, http.StatusBadRequest, gin.H{
 			"error": "密码不一致",
 		})
 		return
 	}
-	user.Name = userAddForm.Name
-	user.Account = userAddForm.Account
-	user.Email = userAddForm.Email
-	user.Sex = userAddForm.Sex
-	randomStr := utils.RandomString(5)
-	password, err := utils.Encrypt(userAddForm.Password, randomStr)
+
+	salt := utils.RandomString(5)
+	password, err := utils.Encrypt(userAddForm.Password, salt)
 	if err != nil {
 		r.JSON(c.Writer, http.StatusInternalServerError, gin.H{
 			"error": err.Error(),
 		})
 		return
 	}
-	user.Password = password
-	user.Salt = randomStr
+	user := models.User{
+		Name:     userAddForm.Name,
+		Account:  userAddForm.Account,
+		Email:    userAddForm.Email,
+		Sex:      userAddForm.Sex,
+		Password: password,
+		Salt:     salt,
+	}
 	err = userDao.Save(user)
 	if err != nil {
 		r.JSON(c.Writer, http.StatusInternalServerError, gin.H{
@@ -177,7 +177,7 @@ func (UserController) Add(c *gin.Context) {
 		return
 	}
 	r.JSON(c.Writer, http.StatusOK, gin.H{
-		"message": err.Error(),
+		"message": "success",
 	})
 }
 
@@ -205,7 +205,9 @@ func (UserController) Delete(c *gin.Context) {
 		})
 		return
 	}
-	r.JSON(c.Writer, http.StatusOK, "")
+	r.JSON(c.Writer, http.StatusOK, gin.H{
+		"message": "success",
+	})
 }
 
 // Reset password
@@ -249,7 +251,9 @@ func (UserController) Reset(c *gin.Context) {
 		})
 		return
 	}
-	r.JSON(c.Writer, http.StatusOK, "")
+	r.JSON(c.Writer, http.StatusOK, gin.H{
+		"message": "success",
+	})
 }
 
 // SetRole set user role
@@ -351,4 +355,52 @@ func (UserController) UnFreeze(c *gin.Context) {
 	r.JSON(c.Writer, http.StatusOK, gin.H{
 		"message": "success",
 	})
+}
+
+// ToChangePasswd to change password page
+func (UserController) ToChangePasswd(c *gin.Context) {
+	r.HTML(c.Writer, http.StatusOK, "system/user/user_chpwd.html", gin.H{})
+}
+
+// ChangePwd change password
+func (UserController) ChangePwd(c *gin.Context) {
+	oldPwd := c.PostForm("oldPwd")
+	newPwd := c.PostForm("newPwd")
+	rePwd := c.PostForm("rePwd")
+	if oldPwd == "" || newPwd == "" || newPwd != rePwd {
+		r.JSON(c.Writer, http.StatusBadRequest, gin.H{
+			"message": "参数为空，或新密码和确认密码不一致",
+		})
+		return
+	}
+	session := sessions.Default(c)
+	id, ok := session.Get("user_id").(int64)
+	if ok {
+		var userDao db.UserDao
+		user, err := userDao.GetUserByID(id)
+		if err != nil {
+			r.JSON(c.Writer, http.StatusInternalServerError, gin.H{
+				"error": err.Error(),
+			})
+			return
+		}
+		password, err := utils.Encrypt(newPwd, user.Salt)
+		if err != nil {
+			r.JSON(c.Writer, http.StatusInternalServerError, gin.H{
+				"message": err.Error(),
+			})
+			return
+		}
+		user.Password = password
+		err = userDao.Update(user)
+		if err != nil {
+			r.JSON(c.Writer, http.StatusInternalServerError, gin.H{
+				"message": err.Error(),
+			})
+			return
+		}
+		r.JSON(c.Writer, http.StatusOK, gin.H{
+			"message": "success",
+		})
+	}
 }
