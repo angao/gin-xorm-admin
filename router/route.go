@@ -64,7 +64,13 @@ func Init(port string) {
 	dept := new(controller.DeptController)
 	deptGroup := router.Group("/dept", middlewares.Auth())
 	{
-		deptGroup.POST("/tree", dept.List)
+		deptGroup.GET("/", dept.Index)
+		deptGroup.POST("/list", dept.List)
+		deptGroup.POST("/tree", dept.Tree)
+
+		deptGroup.GET("/dept_add", dept.ToAdd)
+
+		deptGroup.GET("/dept_update/:deptId", dept.ToEdit)
 	}
 
 	// role /role/

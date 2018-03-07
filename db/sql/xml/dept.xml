@@ -1,0 +1,24 @@
+<sqlMap>
+    <sql id="queryOneDept">
+        SELECT
+            s.id,
+            s.num,
+            s.pid,
+            (
+                SELECT
+                    fullname
+                FROM
+                    sys_dept
+                WHERE
+                    id = s.pid
+            ) AS pname,
+            s.pids,
+            s.simplename,
+            s.fullname,
+            s.tips,
+            s.version
+        FROM
+            sys_dept s
+        WHERE s.id = ?
+    </sql>
+</sqlMap>

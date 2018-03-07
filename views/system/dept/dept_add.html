@@ -1,42 +1,75 @@
-@layout("/common/_container.html"){
+{{ define "system/dept/dept_add.html" }}
 <div class="ibox float-e-margins">
     <div class="ibox-content">
-        <div class="form-horizontal" id="deptInfoForm">
-
+        <div class="form-horizontal bv-form" id="deptInfoForm" novalidate="novalidate">
+            <button type="submit" class="bv-hidden-submit" style="display: none; width: 0px; height: 0px;"></button>
             <input type="hidden" id="id" value="">
-
             <div class="row">
                 <div class="col-sm-6 b-r">
-                    <#input id="simplename" name="部门名称" underline="true"/>
-
-                    <#input id="fullname" name="部门全称" underline="true"/>
-
-                    <#input id="tips" name="备注" underline="true"/>
+                    <div class="form-group has-feedback">
+                        <label class="col-sm-3 control-label">部门名称</label>
+                        <div class="col-sm-9">
+                            <input class="form-control" id="simplename" name="simplename" type="text" data-bv-field="simplename">
+                            <i class="form-control-feedback" data-bv-icon-for="simplename" style="display: none;"></i>
+                            <small class="help-block" data-bv-validator="notEmpty" data-bv-for="simplename" data-bv-result="NOT_VALIDATED" style="display: none;">部门名称不能为空</small>
+                        </div>
+                    </div>
+                    <div class="hr-line-dashed"></div>
+                    <div class="form-group has-feedback">
+                        <label class="col-sm-3 control-label">部门全称</label>
+                        <div class="col-sm-9">
+                            <input class="form-control" id="fullname" name="fullname" type="text" data-bv-field="fullname">
+                            <i class="form-control-feedback" data-bv-icon-for="fullname" style="display: none;"></i>
+                            <small class="help-block" data-bv-validator="notEmpty" data-bv-for="fullname" data-bv-result="NOT_VALIDATED" style="display: none;">部门全称不能为空</small>
+                        </div>
+                    </div>
+                    <div class="hr-line-dashed"></div>
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">备注</label>
+                        <div class="col-sm-9">
+                            <input class="form-control" id="tips" name="tips" type="text">
+                        </div>
+                    </div>
+                    <div class="hr-line-dashed"></div>
                 </div>
                 <div class="col-sm-6">
-                    <#input id="num" name="排序" underline="true"/>
-
-                    <#input id="pName" name="上级部门" readonly="readonly" hidden="pid"
-                            clickFun="DeptInfoDlg.showDeptSelectTree(); return false;"
-                            style="background-color: #ffffff !important;"/>
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">排序</label>
+                        <div class="col-sm-9">
+                            <input class="form-control" id="num" name="num" type="text">
+                        </div>
+                    </div>
+                    <div class="hr-line-dashed"></div>
+                    <div class="form-group has-feedback">
+                        <label class="col-sm-3 control-label">上级部门</label>
+                        <div class="col-sm-9">
+                            <input class="form-control" id="pName" name="pName" type="text" readonly="readonly" onclick="DeptInfoDlg.showDeptSelectTree(); return false;"
+                                style="background-color: #ffffff !important;" data-bv-field="pName">
+                            <i class="form-control-feedback" data-bv-icon-for="pName" style="display: none;"></i>
+                            <input class="form-control" type="hidden" id="pid" value="">
+                            <small class="help-block" data-bv-validator="notEmpty" data-bv-for="pName" data-bv-result="NOT_VALIDATED" style="display: none;">上级名称不能为空</small>
+                        </div>
+                    </div>
                 </div>
             </div>
-
+        
             <!-- 父级部门的选择框 -->
-            <div id="parentDeptMenu" class="menuContent"
-                 style="display: none; position: absolute; z-index: 200;">
-                <ul id="parentDeptMenuTree" class="ztree tree-box" style="width: 245px !important;"></ul>
+            <div id="parentDeptMenu" class="menuContent" style="position: absolute; z-index: 200; left: 505.25px; top: 145px; display: none;">
+                <ul id="parentDeptMenuTree" class="ztree tree-box" style="width: 245px !important;">
+                </ul>
             </div>
-
             <div class="row btn-group-m-t">
                 <div class="col-sm-10">
-                    <#button btnCss="info" name="提交" id="ensure" icon="fa-check" clickFun="DeptInfoDlg.addSubmit()"/>
-                    <#button btnCss="danger" name="取消" id="cancel" icon="fa-eraser" clickFun="DeptInfoDlg.close()"/>
+                    <button type="button" class="btn btn-info " onclick="DeptInfoDlg.addSubmit()" id="ensure">
+                        <i class="fa fa-check"></i>&nbsp;提交
+                    </button>
+                    <button type="button" class="btn btn-danger " onclick="DeptInfoDlg.close()" id="cancel">
+                        <i class="fa fa-eraser"></i>&nbsp;取消
+                    </button>
                 </div>
             </div>
         </div>
-
     </div>
 </div>
-<script src="${ctxPath}/static/modular/system/dept/dept_info.js"></script>
-@}
+<script src="/public/modular/system/dept/dept_info.js"></script>
+{{ end }}

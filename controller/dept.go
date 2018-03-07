@@ -2,6 +2,7 @@ package controller
 
 import (
 	"net/http"
+	"strconv"
 
 	"github.com/angao/gin-xorm-admin/db"
 	"github.com/angao/gin-xorm-admin/models"
@@ -11,11 +12,11 @@ import (
 // DeptController operate dept
 type DeptController struct{}
 
-// List query dept
-func (DeptController) List(c *gin.Context) {
+// Tree query dept
+func (DeptController) Tree(c *gin.Context) {
 	var deptDao db.DeptDao
 
-	depts, err := deptDao.List()
+	depts, err := deptDao.List("")
 	if err != nil {
 		r.JSON(c.Writer, http.StatusInternalServerError, gin.H{
 			"error": err.Error(),
@@ -24,6 +25,53 @@ func (DeptController) List(c *gin.Context) {
 	}
 	treeNodes := build(depts)
 	r.JSON(c.Writer, http.StatusOK, treeNodes)
+}
+
+// Index dept index
+func (DeptController) Index(c *gin.Context) {
+	r.HTML(c.Writer, http.StatusOK, "system/dept/dept.html", gin.H{})
+}
+
+// List query all dept
+func (DeptController) List(c *gin.Context) {
+	name := c.PostForm("condition")
+	var deptDao db.DeptDao
+	depts, err := deptDao.List(name)
+	if err != nil {
+		r.JSON(c.Writer, http.StatusInternalServerError, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
+	r.JSON(c.Writer, http.StatusOK, depts)
+}
+
+// ToAdd to add page
+func (DeptController) ToAdd(c *gin.Context) {
+	r.HTML(c.Writer, http.StatusOK, "system/dept/dept_add.html", gin.H{})
+}
+
+// ToEdit to edit page
+func (DeptController) ToEdit(c *gin.Context) {
+	deptID := c.Param("deptId")
+	id, err := strconv.ParseInt(deptID, 10, 64)
+	if err != nil {
+		r.JSON(c.Writer, http.StatusBadRequest, gin.H{
+			"message": err.Error(),
+		})
+		return
+	}
+	var deptDao db.DeptDao
+	dept, err := deptDao.Get(id)
+	if err != nil {
+		r.JSON(c.Writer, http.StatusInternalServerError, gin.H{
+			"message": err.Error(),
+		})
+		return
+	}
+	r.HTML(c.Writer, http.StatusOK, "system/dept/dept_edit.html", gin.H{
+		"dept": dept,
+	})
 }
 
 func build(depts []models.Dept) []models.ZTreeNode {
