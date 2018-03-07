@@ -18,7 +18,6 @@ type AuthController struct {
 func (AuthController) ToLogin(c *gin.Context) {
 	session := sessions.Default(c)
 	session.Delete("user_id")
-	// c.HTML(http.StatusOK, "login.html", gin.H{})
 	r.HTML(c.Writer, http.StatusOK, "login.html", gin.H{})
 }
 
