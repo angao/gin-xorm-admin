@@ -33,3 +33,22 @@ func (DeptDao) Get(id int64) (models.Dept, error) {
 	}
 	return dept, nil
 }
+
+// Save dept
+func (DeptDao) Save(dept models.Dept) error {
+	_, err := x.Insert(&dept)
+	return err
+}
+
+// Update dept
+func (DeptDao) Update(dept models.Dept) error {
+	_, err := x.Id(dept.Id).Update(&dept)
+	return err
+}
+
+// Delete dept
+func (DeptDao) Delete(id int64) error {
+	dept := new(models.Dept)
+	_, err := x.Id(id).Delete(dept)
+	return err
+}

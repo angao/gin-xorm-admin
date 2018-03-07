@@ -69,8 +69,12 @@ func Init(port string) {
 		deptGroup.POST("/tree", dept.Tree)
 
 		deptGroup.GET("/dept_add", dept.ToAdd)
+		deptGroup.POST("/add", dept.Add)
 
 		deptGroup.GET("/dept_update/:deptId", dept.ToEdit)
+		deptGroup.POST("/update", dept.Edit)
+
+		deptGroup.POST("/delete", dept.Delete)
 	}
 
 	// role /role/

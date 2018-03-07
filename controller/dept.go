@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"fmt"
 	"net/http"
 	"strconv"
 
@@ -51,6 +52,41 @@ func (DeptController) ToAdd(c *gin.Context) {
 	r.HTML(c.Writer, http.StatusOK, "system/dept/dept_add.html", gin.H{})
 }
 
+// Add add dept
+func (DeptController) Add(c *gin.Context) {
+	var dept models.Dept
+	if err := c.Bind(&dept); err != nil {
+		r.JSON(c.Writer, http.StatusBadRequest, gin.H{
+			"message": err.Error(),
+		})
+		return
+	}
+	if dept.SimpleName == "" {
+		r.JSON(c.Writer, http.StatusBadRequest, gin.H{
+			"message": "参数错误",
+		})
+		return
+	}
+	var deptDao db.DeptDao
+	dept, err := deptSetPid(dept, deptDao)
+	if err != nil {
+		r.JSON(c.Writer, http.StatusInternalServerError, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
+	err = deptDao.Save(dept)
+	if err != nil {
+		r.JSON(c.Writer, http.StatusInternalServerError, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
+	r.JSON(c.Writer, http.StatusOK, gin.H{
+		"message": "success",
+	})
+}
+
 // ToEdit to edit page
 func (DeptController) ToEdit(c *gin.Context) {
 	deptID := c.Param("deptId")
@@ -72,6 +108,79 @@ func (DeptController) ToEdit(c *gin.Context) {
 	r.HTML(c.Writer, http.StatusOK, "system/dept/dept_edit.html", gin.H{
 		"dept": dept,
 	})
+}
+
+// Edit update dept
+func (DeptController) Edit(c *gin.Context) {
+	var dept models.Dept
+	if err := c.Bind(&dept); err != nil {
+		r.JSON(c.Writer, http.StatusBadRequest, gin.H{
+			"message": err.Error(),
+		})
+		return
+	}
+	if dept.Id == 0 || dept.SimpleName == "" {
+		r.JSON(c.Writer, http.StatusBadRequest, gin.H{
+			"message": "参数错误",
+		})
+		return
+	}
+	var deptDao db.DeptDao
+
+	dept, err := deptSetPid(dept, deptDao)
+	if err != nil {
+		r.JSON(c.Writer, http.StatusInternalServerError, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
+
+	err = deptDao.Update(dept)
+	if err != nil {
+		r.JSON(c.Writer, http.StatusInternalServerError, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
+	r.JSON(c.Writer, http.StatusOK, gin.H{
+		"message": "success",
+	})
+}
+
+//Delete dept
+func (DeptController) Delete(c *gin.Context) {
+	deptID := c.PostForm("deptId")
+	id, err := strconv.ParseInt(deptID, 10, 64)
+	if err != nil {
+		r.JSON(c.Writer, http.StatusBadRequest, gin.H{
+			"message": err.Error(),
+		})
+		return
+	}
+	var deptDao db.DeptDao
+	err = deptDao.Delete(id)
+	if err != nil {
+		r.JSON(c.Writer, http.StatusInternalServerError, gin.H{
+			"message": err.Error(),
+		})
+		return
+	}
+	r.JSON(c.Writer, http.StatusOK, gin.H{
+		"message": "success",
+	})
+}
+
+func deptSetPid(dept models.Dept, deptDao db.DeptDao) (models.Dept, error) {
+	if dept.Pid == 0 {
+		dept.Pids = "[0],"
+	} else {
+		pDept, err := deptDao.Get(dept.Pid)
+		if err != nil {
+			return dept, err
+		}
+		dept.Pids = pDept.Pids + "[" + fmt.Sprintf("%d", dept.Pid) + "],"
+	}
+	return dept, nil
 }
 
 func build(depts []models.Dept) []models.ZTreeNode {
