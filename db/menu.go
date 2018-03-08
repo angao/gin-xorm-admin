@@ -46,7 +46,14 @@ func (MenuDao) List(menuForm forms.MenuForm) ([]models.Menu, error) {
 
 // Update update menu
 func (MenuDao) Update(menu models.Menu) error {
-	_, err := x.Table("sys_menu").Id(menu.Id).Cols(cols...).Update(&menu)
+	_, err := x.Id(menu.Id).Cols(cols...).Update(&menu)
+	return err
+}
+
+// Delete menu
+func (MenuDao) Delete(id int64) error {
+	menu := new(models.Menu)
+	_, err := x.Id(id).Delete(menu)
 	return err
 }
 
@@ -54,7 +61,7 @@ func (MenuDao) Update(menu models.Menu) error {
 func (MenuDao) Get(id int64) (*models.Menu, error) {
 	menu := new(models.Menu)
 	menu.Id = id
-	has, err := x.Table("sys_menu").Cols(cols...).Get(menu)
+	has, err := x.Cols(cols...).Get(menu)
 	if err != nil {
 		return nil, err
 	}

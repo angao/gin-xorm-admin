@@ -37,3 +37,8 @@ type Menu struct {
 
 	Children []Menu `xorm:"-"`
 }
+
+// TableName set table
+func (Menu) TableName() string {
+	return "sys_menu"
+}

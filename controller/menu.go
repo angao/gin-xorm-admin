@@ -56,10 +56,7 @@ func (MenuController) Remove(c *gin.Context) {
 		})
 		return
 	}
-	menu, err := menuDao.Get(id)
-	menu.Status = 0
-
-	err = menuDao.Update(*menu)
+	err = menuDao.Delete(id)
 	if err != nil {
 		r.JSON(c.Writer, http.StatusInternalServerError, gin.H{
 			"message": err.Error(),
