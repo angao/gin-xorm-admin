@@ -27,6 +27,7 @@ func (RoleDao) QueryAllRole() ([]models.ZTreeNode, error) {
 func (RoleDao) List(roleForm forms.RoleForm) ([]models.Role, error) {
 	var roles []models.Role
 	param := utils.StructToMap(roleForm)
+	param["Id"] = 0
 	err := x.SqlTemplateClient("role.list.sql", &param).Find(&roles)
 	if err != nil {
 		return nil, err
@@ -43,7 +44,11 @@ func (RoleDao) List(roleForm forms.RoleForm) ([]models.Role, error) {
 func (RoleDao) Get(id int64) (models.Role, error) {
 	var role models.Role
 	param := map[string]interface{}{
-		"Id": id,
+		"Id":     id,
+		"Order":  "",
+		"Offset": 0,
+		"Limit":  0,
+		"Name":   "",
 	}
 	has, err := x.SqlTemplateClient("role.list.sql", &param).Get(&role)
 	if err != nil {
