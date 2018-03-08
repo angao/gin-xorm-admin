@@ -3,8 +3,8 @@ package middlewares
 import (
 	"net/http"
 
-	"github.com/gin-gonic/gin"
 	"github.com/gin-contrib/sessions"
+	"github.com/gin-gonic/gin"
 )
 
 // ErrorHandler is a middleware to handle errors encountered during requests
