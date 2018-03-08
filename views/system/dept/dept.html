@@ -24,30 +24,23 @@
                                 </button>
                             </div>
                         </div>
-                        <div class="fixed-table-toolbar">
-                            <div class="bs-bars pull-left">
-                                <div class="hidden-xs" id="DeptTableToolbar" role="group">
-                                    <button type="button" class="btn btn-primary " onclick="Dept.openAddDept()" id="">
-                                        <i class="fa fa-plus"></i>&nbsp;添加
-                                    </button>
-                                    <button type="button" class="btn btn-primary button-margin" onclick="Dept.openDeptDetail()" id="">
-                                        <i class="fa fa-plus"></i>&nbsp;修改
-                                    </button>
-                                    <button type="button" class="btn btn-primary button-margin" onclick="Dept.delete()" id="">
-                                        <i class="fa fa-plus"></i>&nbsp;删除
-                                    </button>
-                                </div>
-                            </div>
+                        <div class="bs-bars pull-left" style="margin: 10px;">
+                            <button type="button" class="btn btn-primary " onclick="Dept.openAddDept()" id="">
+                                <i class="fa fa-plus"></i>&nbsp;添加
+                            </button>
+                            <button type="button" class="btn btn-info button-margin" onclick="Dept.openDeptDetail()" id="">
+                                <i class="fa fa-edit"></i>&nbsp;修改
+                            </button>
+                            <button type="button" class="btn btn-danger button-margin" onclick="Dept.delete()" id="">
+                                <i class="fa fa-remove"></i>&nbsp;删除
+                            </button>
                         </div>
-                        <div class="fixed-table-container">
-                            <table id="DeptTable" data-mobile-responsive="true" data-click-to-select="true" class="table table-hover treegrid-table table-bordered table-striped">
-                            </table>
-                        </div>
+                        <table id="DeptTable" data-mobile-responsive="true" data-click-to-select="true" class="table table-hover treegrid-table table-bordered table-striped">
+                        </table>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
-<script src="/public/modular/system/dept/dept.js"></script>
-{{ end }}
+<script src="/public/modular/system/dept/dept.js"></script> {{ end }}
