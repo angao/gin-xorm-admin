@@ -1,82 +1,126 @@
 {{ define "system/user/user_add.html" }}
 <div class="ibox float-e-margins">
 	<div class="ibox-content">
-		<div class="form-horizontal" id="userInfoForm">
+		<div class="form-horizontal bv-form" id="userInfoForm" novalidate="novalidate">
+			<button type="submit" class="bv-hidden-submit" style="display: none; width: 0px; height: 0px;"></button>
 			<input type="hidden" id="id" value="">
 			<div class="row">
 				<div class="col-sm-6 b-r">
-					<div class="input-group">
-						<div class="input-group-addon">账户</div>
-						<input type="text" class="form-control" name="account" id="account" placeholder="账户">
+					<div class="form-group has-feedback">
+						<label class="col-sm-3 control-label">账户</label>
+						<div class="col-sm-9">
+							<input class="form-control" id="account" name="account" type="text" data-bv-field="account">
+							<i class="form-control-feedback" data-bv-icon-for="account" style="display: none;"></i>
+							<small class="help-block" data-bv-validator="notEmpty" data-bv-for="account" data-bv-result="NOT_VALIDATED" style="display: none;">账户不能为空</small>
+						</div>
 					</div>
-					<div class="hr-line-dashed"></div>	
-					<div class="input-group">
-						<div class="input-group-addon">性别</div>
-						<select id="sex" name="sex" class="form-control">
-							<option value="1">男</option>
-							<option value="2">女</option>
-						</select>
+					<div class="hr-line-dashed"></div>
+					<div class="form-group">
+						<label class="col-sm-3 control-label">性别</label>
+						<div class="col-sm-9">
+							<select class="form-control" id="sex" name="sex">
+								<option value="1">男</option>
+								<option value="2">女</option>
+							</select>
+						</div>
 					</div>
-					<div class="hr-line-dashed"></div>	
-					<div class="input-group">
-						<div class="input-group-addon">密码</div>
-						<input type="text" class="form-control" name="password" id="password" placeholder="密码">
+					<div class="hr-line-dashed"></div>
+					<div class="form-group has-feedback">
+						<label class="col-sm-3 control-label">密码</label>
+						<div class="col-sm-9">
+							<input class="form-control" id="password" name="password" type="password" data-bv-field="password">
+							<i class="form-control-feedback" data-bv-icon-for="password" style="display: none;"></i>
+							<small class="help-block" data-bv-validator="notEmpty" data-bv-for="password" data-bv-result="NOT_VALIDATED" style="display: none;">密码不能为空</small>
+							<small class="help-block" data-bv-validator="identical" data-bv-for="password" data-bv-result="NOT_VALIDATED" style="display: none;">两次密码不一致</small>
+						</div>
 					</div>
-					<div class="hr-line-dashed"></div>	
-					<div class="input-group">
-						<div class="input-group-addon">角色</div>
-						<input type="text" class="form-control" disabled name="roleid" id="roleid" placeholder="角色">
+					<div class="hr-line-dashed"></div>
+					<div class="form-group">
+						<label class="col-sm-3 control-label">角色</label>
+						<div class="col-sm-9">
+							<input class="form-control" id="roleid" name="roleid" type="text" disabled="disabled">
+						</div>
 					</div>
-					<div class="hr-line-dashed"></div>	
-					<div class="input-group">
-						<div class="input-group-addon">邮箱</div>
-						<input type="email" class="form-control" name="email" id="email" placeholder="邮箱">
+					<div class="hr-line-dashed"></div>
+					<div class="form-group has-feedback">
+						<label class="col-sm-3 control-label">邮箱</label>
+						<div class="col-sm-9">
+							<input class="form-control" id="email" name="email" type="email" data-bv-field="email">
+							<i class="form-control-feedback" data-bv-icon-for="email" style="display: none;"></i>
+							<small class="help-block" data-bv-validator="emailAddress" data-bv-for="email" data-bv-result="NOT_VALIDATED" style="display: none;">请输入有效的邮件地址</small>
+						</div>
 					</div>
 				</div>
 				<div class="col-sm-6">
 					<div id="driverInfoContent">
-						<div class="input-group">
-							<div class="input-group-addon">姓名</div>
-							<input type="text" class="form-control" name="name" id="name" placeholder="姓名" >
+						<div class="form-group has-feedback">
+							<label class="col-sm-3 control-label">姓名</label>
+							<div class="col-sm-9">
+								<input class="form-control" id="name" name="name" type="text" data-bv-field="name">
+								<i class="form-control-feedback" data-bv-icon-for="name" style="display: none;"></i>
+
+								<small class="help-block" data-bv-validator="notEmpty" data-bv-for="name" data-bv-result="NOT_VALIDATED" style="display: none;">姓名不能为空</small>
+							</div>
 						</div>
-						<div class="hr-line-dashed"></div>	
-						<div class="input-group">
-							<div class="input-group-addon">出生日期</div>
-							<input type="text" class="form-control" name="birthday" id="birthday" placeholder="出生日期">
+						<div class="hr-line-dashed"></div>
+
+						<div class="form-group">
+							<label class="col-sm-3 control-label">出生日期</label>
+							<div class="col-sm-9">
+								<input class="form-control" id="birthday" name="birthday" type="date" onclick="laydate({istime: false, format: 'YYYY-MM-DD'})">
+							</div>
 						</div>
-						<div class="hr-line-dashed"></div>	
-						<div class="input-group">
-							<div class="input-group-addon">确认密码</div>
-							<input type="text" class="form-control" name="rePassword" id="rePassword" placeholder="确认密码">
+						<div class="hr-line-dashed"></div>
+						<div class="form-group has-feedback">
+							<label class="col-sm-3 control-label">确认密码</label>
+							<div class="col-sm-9">
+								<input class="form-control" id="rePassword" name="rePassword" type="password" data-bv-field="rePassword">
+								<i class="form-control-feedback" data-bv-icon-for="rePassword" style="display: none;"></i>
+
+								<small class="help-block" data-bv-validator="notEmpty" data-bv-for="rePassword" data-bv-result="NOT_VALIDATED" style="display: none;">密码不能为空</small>
+								<small class="help-block" data-bv-validator="identical" data-bv-for="rePassword" data-bv-result="NOT_VALIDATED" style="display: none;">两次密码不一致</small>
+							</div>
 						</div>
-						<div class="hr-line-dashed"></div>	
-						<div class="input-group">
-							<div class="input-group-addon">部门</div>
-							<input type="text" class="form-control" readonly="readonly" name="citySel" 
-								id="citySel" onclick="UserInfoDlg.showDeptSelectTree(); return false;"
-							 	placeholder="部门" style="background-color: #ffffff !important;">
+						<div class="hr-line-dashed"></div>
+
+						<div class="form-group has-feedback">
+							<label class="col-sm-3 control-label">部门</label>
+							<div class="col-sm-9">
+								<input class="form-control" id="citySel" name="citySel" type="text" readonly="readonly" onclick="UserInfoDlg.showDeptSelectTree(); return false;"
+								 style="background-color: #ffffff !important;" data-bv-field="citySel">
+								<i class="form-control-feedback" data-bv-icon-for="citySel" style="display: none;"></i>
+								<input class="form-control" type="hidden" id="deptid" value="">
+								<small class="help-block" data-bv-validator="notEmpty" data-bv-for="citySel" data-bv-result="NOT_VALIDATED" style="display: none;">部门不能为空</small>
+							</div>
 						</div>
-						<div class="hr-line-dashed"></div>	
-						<div class="input-group">
-							<div class="input-group-addon">电话</div>
-							<input type="text" class="form-control" name="phone" id="phone" placeholder="电话">
+						<div class="hr-line-dashed"></div>
+						<div class="form-group">
+							<label class="col-sm-3 control-label">电话</label>
+							<div class="col-sm-9">
+								<input class="form-control" id="phone" name="phone" type="text">
+							</div>
 						</div>
 					</div>
 				</div>
 			</div>
+
 			<!-- 这是部门选择的下拉框 -->
 			<div id="menuContent" class="menuContent" style="display: none; position: absolute; z-index: 200;">
-				<ul id="treeDemo" class="ztree tree-box" style="width: 249px !important;"></ul>
+				<ul id="treeDemo" class="ztree tree-box" style="width: 249px !important;">
+				</ul>
 			</div>
 
 			<div class="row btn-group-m-t">
 				<div class="col-sm-10">
-					<button class="btn btn-info" id="ensure" onclick="UserInfoDlg.addSubmit()"/><i class="fa fa-check"></i>&nbsp;提交</button>
-					<button class="btn btn-danger" id="cancel" onclick="UserInfoDlg.close()"><i class="fa fa-eraser"></i>&nbsp;取消</button>
+					<button type="button" class="btn btn-info " onclick="UserInfoDlg.addSubmit()" id="ensure">
+						<i class="fa fa-check"></i>&nbsp;提交
+					</button>
+					<button type="button" class="btn btn-danger " onclick="UserInfoDlg.close()" id="cancel">
+						<i class="fa fa-eraser"></i>&nbsp;取消
+					</button>
 				</div>
 			</div>
 		</div>
 	</div>
 </div>
-<script src="/public/modular/system/user/user_info.js"></script>
-{{ end }}
+<script src="/public/modular/system/user/user_info.js"></script> {{ end }}

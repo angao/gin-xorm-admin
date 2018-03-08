@@ -275,11 +275,15 @@ func (UserController) SetRole(c *gin.Context) {
 		})
 		return
 	}
-	user := models.User{
-		Id:     id,
-		RoleId: roleIDs,
+	user, err := userDao.GetUserByID(id)
+	if err != nil {
+		r.JSON(c.Writer, http.StatusInternalServerError, gin.H{
+			"error": err.Error(),
+		})
+		return
 	}
-	err = userDao.Update(&user)
+	user.RoleId = roleIDs
+	err = userDao.Update(user)
 	if err != nil {
 		r.JSON(c.Writer, http.StatusInternalServerError, gin.H{
 			"message": err.Error(),
@@ -308,11 +312,15 @@ func (UserController) Freeze(c *gin.Context) {
 		})
 		return
 	}
-	user := models.User{
-		Id:     id,
-		Status: 2,
+	user, err := userDao.GetUserByID(id)
+	if err != nil {
+		r.JSON(c.Writer, http.StatusInternalServerError, gin.H{
+			"error": err.Error(),
+		})
+		return
 	}
-	err = userDao.Update(&user)
+	user.Status = 2
+	err = userDao.Update(user)
 	if err != nil {
 		r.JSON(c.Writer, http.StatusInternalServerError, gin.H{
 			"message": err.Error(),
@@ -341,11 +349,15 @@ func (UserController) UnFreeze(c *gin.Context) {
 		})
 		return
 	}
-	user := models.User{
-		Id:     id,
-		Status: 1,
+	user, err := userDao.GetUserByID(id)
+	if err != nil {
+		r.JSON(c.Writer, http.StatusInternalServerError, gin.H{
+			"error": err.Error(),
+		})
+		return
 	}
-	err = userDao.Update(&user)
+	user.Status = 1
+	err = userDao.Update(user)
 	if err != nil {
 		r.JSON(c.Writer, http.StatusInternalServerError, gin.H{
 			"message": err.Error(),
