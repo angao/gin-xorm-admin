@@ -46,18 +46,23 @@ func Init(port string) {
 		userGroup.GET("/", user.Home)
 		userGroup.POST("/list", user.List)
 		userGroup.GET("/user_info", user.Info)
-		userGroup.GET("/user_chpwd", user.ToChangePasswd)
-		userGroup.GET("/user_add", user.ToAdd)
-		userGroup.GET("/user_edit/:id", user.ToEdit)
-		userGroup.GET("/role_assign/:id", user.ToRoleAssign)
 
+		userGroup.GET("/user_add", user.ToAdd)
 		userGroup.POST("/add", user.Add)
+
+		userGroup.GET("/user_edit/:id", user.ToEdit)
+
 		userGroup.POST("/delete", user.Delete)
+
+		userGroup.GET("/user_chpwd", user.ToChangePasswd)
+		userGroup.POST("/changePwd", user.ChangePwd)
 		userGroup.POST("/reset", user.Reset)
+
+		userGroup.GET("/role_assign/:id", user.ToRoleAssign)
+		userGroup.POST("/setRole", user.SetRole)
+
 		userGroup.POST("/freeze", user.Freeze)
 		userGroup.POST("/unfreeze", user.UnFreeze)
-		userGroup.POST("/setRole", user.SetRole)
-		userGroup.POST("/changePwd", user.ChangePwd)
 	}
 
 	// dept /dept/
@@ -83,6 +88,7 @@ func Init(port string) {
 	{
 		roleGroup.GET("/", role.Index)
 		roleGroup.POST("/list", role.List)
+
 		roleGroup.GET("/role_add", role.ToAdd)
 		roleGroup.POST("/add", role.Add)
 
@@ -104,15 +110,16 @@ func Init(port string) {
 	{
 		menuGroup.GET("/", menu.Index)
 		menuGroup.POST("/list", menu.List)
-		menuGroup.POST("/remove", menu.Remove)
 
 		menuGroup.GET("/menu_add", menu.ToAdd)
 		menuGroup.POST("/add", menu.Add)
-		menuGroup.POST("/selectMenuTreeList", menu.SelectMenuTreeList)
 
 		menuGroup.GET("/menu_edit/:menuId", menu.ToEdit)
 		menuGroup.POST("/edit", menu.Edit)
 
+		menuGroup.POST("/remove", menu.Remove)
+
+		menuGroup.POST("/selectMenuTreeList", menu.SelectMenuTreeList)
 		menuGroup.POST("/menuTreeListByRoleId/:roleId", menu.TreeListByRoleID)
 	}
 	router.Run(":" + port)
