@@ -106,7 +106,7 @@ func (RoleDao) SetAuthority(roleID int64, ids string) error {
 		return err
 	}
 	relation := new(models.Relation)
-	_, err = session.Table("sys_relation").Where("roleid = ?", roleID).Delete(relation)
+	_, err = session.Where("roleid = ?", roleID).Delete(relation)
 	if err != nil {
 		session.Rollback()
 		return err
@@ -122,7 +122,7 @@ func (RoleDao) SetAuthority(roleID int64, ids string) error {
 			RoleID: roleID,
 			MenuID: id,
 		}
-		_, err = session.Table("sys_relation").Insert(&relation)
+		_, err = session.Insert(&relation)
 		if err != nil {
 			session.Rollback()
 			return err
