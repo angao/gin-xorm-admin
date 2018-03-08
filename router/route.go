@@ -95,6 +95,8 @@ func Init(port string) {
 
 		roleGroup.POST("/roleTreeList", role.TreeList)
 		roleGroup.POST("/roleTreeListByUserId/:userId", role.RoleTreeListByUserID)
+
+		roleGroup.POST("/setAuthority", role.SetAuthority)
 	}
 
 	menu := new(controller.MenuController)
@@ -110,6 +112,8 @@ func Init(port string) {
 
 		menuGroup.GET("/menu_edit/:menuId", menu.ToEdit)
 		menuGroup.POST("/edit", menu.Edit)
+
+		menuGroup.POST("/menuTreeListByRoleId/:roleId", menu.TreeListByRoleID)
 	}
 	router.Run(":" + port)
 }

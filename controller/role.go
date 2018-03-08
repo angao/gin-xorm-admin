@@ -236,3 +236,33 @@ func (RoleController) TreeList(c *gin.Context) {
 	})
 	r.JSON(c.Writer, http.StatusOK, nodes)
 }
+
+// SetAuthority set role authority
+func (RoleController) SetAuthority(c *gin.Context) {
+	roleID := c.PostForm("roleId")
+	ids := c.PostForm("ids")
+	if roleID == "" {
+		r.JSON(c.Writer, http.StatusBadRequest, gin.H{
+			"message": "参数错误",
+		})
+		return
+	}
+	id, err := strconv.ParseInt(roleID, 10, 64)
+	if err != nil {
+		r.JSON(c.Writer, http.StatusBadRequest, gin.H{
+			"message": err.Error(),
+		})
+		return
+	}
+	var roleDao db.RoleDao
+	err = roleDao.SetAuthority(id, ids)
+	if err != nil {
+		r.JSON(c.Writer, http.StatusInternalServerError, gin.H{
+			"message": err.Error(),
+		})
+		return
+	}
+	r.JSON(c.Writer, http.StatusOK, gin.H{
+		"message": "success",
+	})
+}

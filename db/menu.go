@@ -86,3 +86,26 @@ func (MenuDao) SelectMenuTreeList() ([]models.ZTreeNode, error) {
 	}
 	return menus, nil
 }
+
+// GetMenuIdsByRoleID query menuIDs by roleID
+func (MenuDao) GetMenuIdsByRoleID(roleID int64) ([]int64, error) {
+	menuIDs := make([]int64, 0)
+	err := x.Table("sys_relation").Cols("menuid").Where("roleid = ?", roleID).Find(&menuIDs)
+	if err != nil {
+		return menuIDs, err
+	}
+	return menuIDs, nil
+}
+
+// GetMenusByMenuIDs query menu tree by menuIds
+func (MenuDao) GetMenusByMenuIDs(menuIDs []int64) ([]models.ZTreeNode, error) {
+	var menus []models.ZTreeNode
+	param := make(map[string]interface{}, 2)
+	param["menuIDs"] = menuIDs
+	param["length"] = len(menuIDs) - 1
+	err := x.SqlTemplateClient("menu.treeByMenuIds.sql", &param).Find(&menus)
+	if err != nil {
+		return nil, err
+	}
+	return menus, nil
+}

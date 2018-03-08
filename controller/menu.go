@@ -197,6 +197,51 @@ func (MenuController) Edit(c *gin.Context) {
 	})
 }
 
+// TreeListByRoleID query menu by roleid
+func (MenuController) TreeListByRoleID(c *gin.Context) {
+	roleID := c.Param("roleId")
+	if roleID == "" {
+		r.JSON(c.Writer, http.StatusBadRequest, gin.H{
+			"message": "参数错误",
+		})
+		return
+	}
+	id, err := strconv.ParseInt(roleID, 10, 64)
+	if err != nil {
+		r.JSON(c.Writer, http.StatusBadRequest, gin.H{
+			"message": err.Error(),
+		})
+		return
+	}
+	var menuDao db.MenuDao
+	menuIDs, err := menuDao.GetMenuIdsByRoleID(id)
+	if err != nil {
+		r.JSON(c.Writer, http.StatusInternalServerError, gin.H{
+			"message": err.Error(),
+		})
+		return
+	}
+	if len(menuIDs) == 0 {
+		nodes, err := menuDao.SelectMenuTreeList()
+		if err != nil {
+			r.JSON(c.Writer, http.StatusInternalServerError, gin.H{
+				"message": err.Error(),
+			})
+			return
+		}
+		r.JSON(c.Writer, http.StatusOK, nodes)
+		return
+	}
+	nodes, err := menuDao.GetMenusByMenuIDs(menuIDs)
+	if err != nil {
+		r.JSON(c.Writer, http.StatusInternalServerError, gin.H{
+			"message": err.Error(),
+		})
+		return
+	}
+	r.JSON(c.Writer, http.StatusOK, nodes)
+}
+
 func menuSetPcode(menu *models.Menu) error {
 	if menu.Pcode == "" || menu.Pcode == "0" {
 		menu.Pcode = "0"

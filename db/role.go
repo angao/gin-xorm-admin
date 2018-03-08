@@ -2,6 +2,8 @@ package db
 
 import (
 	"errors"
+	"strconv"
+	"strings"
 
 	"github.com/angao/gin-xorm-admin/forms"
 	"github.com/angao/gin-xorm-admin/models"
@@ -86,4 +88,46 @@ func (RoleDao) TreeListByRoleID(roleIds []string) ([]models.ZTreeNode, error) {
 		return nil, err
 	}
 	return roles, nil
+}
+
+// DeleteRolesByID delete roles by id
+func (RoleDao) DeleteRolesByID(roleID int64) error {
+	relation := new(models.Relation)
+	_, err := x.Table("sys_relation").Where("roleid = ?", roleID).Delete(relation)
+	return err
+}
+
+// SetAuthority set authority
+func (RoleDao) SetAuthority(roleID int64, ids string) error {
+	session := x.NewSession()
+	defer session.Close()
+	err := session.Begin()
+	if err != nil {
+		return err
+	}
+	relation := new(models.Relation)
+	_, err = session.Table("sys_relation").Where("roleid = ?", roleID).Delete(relation)
+	if err != nil {
+		session.Rollback()
+		return err
+	}
+	menuIDs := strings.Split(ids, ",")
+	for _, menuID := range menuIDs {
+		id, err := strconv.ParseInt(menuID, 10, 64)
+		if err != nil {
+			session.Rollback()
+			return err
+		}
+		relation := models.Relation{
+			RoleID: roleID,
+			MenuID: id,
+		}
+		_, err = session.Table("sys_relation").Insert(&relation)
+		if err != nil {
+			session.Rollback()
+			return err
+		}
+	}
+	session.Commit()
+	return nil
 }

@@ -54,5 +54,5 @@ func init() {
 			x.Ping()
 		}
 	}(x)
-	x.ShowSQL(true)
+	// x.ShowSQL(true)
 }
