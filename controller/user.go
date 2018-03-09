@@ -25,15 +25,15 @@ func (UserController) Home(c *gin.Context) {
 func (UserController) List(c *gin.Context) {
 	var userDao db.UserDao
 
-	var userForm forms.UserForm
-	if err := c.Bind(&userForm); err != nil {
+	var page forms.Page
+	if err := c.Bind(&page); err != nil {
 		r.JSON(c.Writer, http.StatusBadRequest, gin.H{
 			"error": err.Error(),
 		})
 		return
 	}
 
-	users, err := userDao.List(userForm)
+	users, err := userDao.List(page)
 	if err != nil {
 		r.JSON(c.Writer, http.StatusInternalServerError, gin.H{
 			"error": err.Error(),

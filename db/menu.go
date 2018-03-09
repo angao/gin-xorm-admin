@@ -34,9 +34,9 @@ func (MenuDao) GetMenuByRoleIds(roleIDs []string) ([]models.Menu, error) {
 }
 
 // List query menu
-func (MenuDao) List(menuForm forms.MenuForm) ([]models.Menu, error) {
+func (MenuDao) List(page forms.Page) ([]models.Menu, error) {
 	var menus []models.Menu
-	param := utils.StructToMap(menuForm)
+	param := utils.StructToMap(page)
 	err := x.SqlTemplateClient("menu.list.sql", &param).Find(&menus)
 	if err != nil {
 		return nil, err

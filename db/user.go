@@ -71,9 +71,9 @@ func (UserDao) GetUserRole(id int64) (*models.UserRole, error) {
 }
 
 // List query all user
-func (UserDao) List(userForm forms.UserForm) ([]UserBean, error) {
+func (UserDao) List(page forms.Page) ([]UserBean, error) {
 	users := make([]UserBean, 0)
-	param := utils.StructToMap(userForm)
+	param := utils.StructToMap(page)
 	err := x.SqlTemplateClient("user.all.sql", &param).Find(&users)
 	if err != nil {
 		return nil, err

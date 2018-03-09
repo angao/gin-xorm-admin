@@ -12,7 +12,7 @@
                             <div class="col-sm-3">
                                 <div class="input-group">
                                     <div class="input-group-addon">角色名称</div>
-                                    <input type="text" class="form-control" name="roleName" id="roleName" placeholder="角色名称" >
+                                    <input type="text" class="form-control" name="name" id="roleName" placeholder="角色名称" >
                                 </div>
                             </div>
                             <div class="col-sm-3">
@@ -25,7 +25,9 @@
                             <button class="btn btn-danger" onclick="Role.delRole()"><i class="fa fa-remove"></i>&nbsp;删除</button>
                             <button class="btn btn-warning" onclick="Role.assign()"><i class="fa fa-user-secret"></i>&nbsp;权限配置</button>
                         </div>
-                        <table id="roleTable"></table>
+                        <table id="roleTable" data-mobile-responsive="true" data-click-to-select="true" class="table table-hover table-striped"
+                            style="margin-top: -40px;">
+                        </table>
                     </div>
                 </div>
             </div>

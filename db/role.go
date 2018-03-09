@@ -24,9 +24,9 @@ func (RoleDao) QueryAllRole() ([]models.ZTreeNode, error) {
 }
 
 // List query all role containes dept
-func (RoleDao) List(roleForm forms.RoleForm) ([]models.Role, error) {
+func (RoleDao) List(page forms.Page) ([]models.Role, error) {
 	var roles []models.Role
-	param := utils.StructToMap(roleForm)
+	param := utils.StructToMap(page)
 	param["Id"] = 0
 	err := x.SqlTemplateClient("role.list.sql", &param).Find(&roles)
 	if err != nil {

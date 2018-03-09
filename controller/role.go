@@ -23,14 +23,14 @@ func (RoleController) Index(c *gin.Context) {
 // List query all role
 func (RoleController) List(c *gin.Context) {
 	var roleDao db.RoleDao
-	var roleForm forms.RoleForm
-	if err := c.Bind(&roleForm); err != nil {
+	var page forms.Page
+	if err := c.Bind(&page); err != nil {
 		r.JSON(c.Writer, http.StatusBadRequest, gin.H{
 			"error": err.Error(),
 		})
 		return
 	}
-	roles, err := roleDao.List(roleForm)
+	roles, err := roleDao.List(page)
 	if err != nil {
 		r.JSON(c.Writer, http.StatusInternalServerError, gin.H{
 			"error": err.Error(),

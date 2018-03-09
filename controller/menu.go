@@ -22,14 +22,14 @@ func (MenuController) Index(c *gin.Context) {
 // List query all menu
 func (MenuController) List(c *gin.Context) {
 	var menuDao db.MenuDao
-	var menuForm forms.MenuForm
-	if err := c.Bind(&menuForm); err != nil {
+	var page forms.Page
+	if err := c.Bind(&page); err != nil {
 		r.JSON(c.Writer, http.StatusBadRequest, gin.H{
 			"error": err.Error(),
 		})
 		return
 	}
-	menus, err := menuDao.List(menuForm)
+	menus, err := menuDao.List(page)
 	if err != nil {
 		r.JSON(c.Writer, http.StatusInternalServerError, gin.H{
 			"error": err.Error(),

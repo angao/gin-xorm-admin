@@ -122,5 +122,13 @@ func Init(port string) {
 		menuGroup.POST("/selectMenuTreeList", menu.SelectMenuTreeList)
 		menuGroup.POST("/menuTreeListByRoleId/:roleId", menu.TreeListByRoleID)
 	}
+
+	notice := new(controller.NoticeController)
+	noticeGroup := router.Group("/notice", middlewares.Auth())
+	{
+		noticeGroup.GET("/", notice.Index)
+		noticeGroup.POST("/list", notice.List)
+	}
+
 	router.Run(":" + port)
 }

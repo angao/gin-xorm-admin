@@ -99,7 +99,7 @@ Menu.delMenu = function () {
 Menu.search = function () {
     var queryData = {};
 
-    queryData['menuName'] = $("#menuName").val();
+    queryData['name'] = $("#menuName").val();
     queryData['level'] = $("#level").val();
 
     Menu.table.refresh({query: queryData});

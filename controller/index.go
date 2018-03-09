@@ -5,6 +5,8 @@ import (
 	"net/http"
 	"strings"
 
+	"github.com/angao/gin-xorm-admin/forms"
+
 	"github.com/angao/gin-xorm-admin/db"
 	"github.com/angao/gin-xorm-admin/models"
 	"github.com/gin-contrib/sessions"
@@ -52,7 +54,8 @@ func (IndexController) Home(c *gin.Context) {
 // BlackBoard is handle "/blackboard"
 func (IndexController) BlackBoard(c *gin.Context) {
 	var noticeDao db.NoticeDao
-	notices, err := noticeDao.List()
+	page := forms.Page{}
+	notices, err := noticeDao.List(page)
 	if err != nil {
 		r.JSON(c.Writer, http.StatusInternalServerError, gin.H{
 			"message": err.Error(),
