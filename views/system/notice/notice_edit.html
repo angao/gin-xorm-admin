@@ -1,18 +1,18 @@
-@layout("/common/_container.html"){
+{{ define "system/notice/notice_edit.html" }}
 <div class="ibox float-e-margins">
     <div class="ibox-content">
-        <div class="form-horizontal" id="noticeInfoForm">
-
-            <input type="hidden" id="id" value="${notice.id}">
-            <input type="hidden" id="contentVal" value='${notice.content}'>
-
+        <div class="form-horizontal bv-form" id="noticeInfoForm" novalidate="novalidate">
+            <button type="submit" class="bv-hidden-submit" style="display: none; width: 0px; height: 0px;"></button>
+            <input type="hidden" id="id" value="{{ .notice.ID }}">
+            <input type="hidden" id="contentVal" value="{{ .notice.Content }}">
             <div class="row">
                 <div class="col-sm-12">
-                    <div class="form-group">
+                    <div class="form-group has-feedback">
                         <label class="col-sm-1 control-label">标题</label>
                         <div class="col-sm-11">
-                            <input class="form-control" id="title" name="title" type="text" value="${notice.title}">
-
+                            <input class="form-control" id="title" name="title" type="text" value="{{ .notice.Title }}" data-bv-field="title">
+                            <i class="form-control-feedback" data-bv-icon-for="title" style="display: none;"></i>
+                            <small class="help-block" data-bv-validator="notEmpty" data-bv-for="title" data-bv-result="NOT_VALIDATED" style="display: none;">标题不能为空</small>
                         </div>
                     </div>
                     <div class="form-group">
@@ -27,13 +27,17 @@
 
             <div class="row btn-group-m-t">
                 <div class="col-sm-10">
-                    <#button btnCss="info" name="提交" id="ensure" icon="fa-check" clickFun="NoticeInfoDlg.editSubmit()"/>
-                    <#button btnCss="danger" name="取消" id="cancel" icon="fa-eraser" clickFun="NoticeInfoDlg.close()"/>
+                    <button type="button" class="btn btn-info " onclick="NoticeInfoDlg.editSubmit()" id="ensure">
+                        <i class="fa fa-check"></i>&nbsp;提交
+                    </button>
+                    <button type="button" class="btn btn-danger " onclick="NoticeInfoDlg.close()" id="cancel">
+                        <i class="fa fa-eraser"></i>&nbsp;取消
+                    </button>
                 </div>
             </div>
         </div>
     </div>
 </div>
-<script type="text/javascript" src="${ctxPath}/static/js/plugins/wangEditor/wangEditor.js"></script>
-<script src="${ctxPath}/static/modular/system/notice/notice_info.js"></script>
-@}
+<script type="text/javascript" src="/public/js/plugins/wangEditor/wangEditor.js"></script>
+<script src="/public/modular/system/notice/notice_info.js"></script> 
+{{ end }}

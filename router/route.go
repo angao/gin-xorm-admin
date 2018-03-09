@@ -128,6 +128,10 @@ func Init(port string) {
 	{
 		noticeGroup.GET("/", notice.Index)
 		noticeGroup.POST("/list", notice.List)
+
+		noticeGroup.GET("/notice_add", notice.ToAdd)
+
+		noticeGroup.GET("/notice_update/:noticeId", notice.ToEdit)
 	}
 
 	router.Run(":" + port)
