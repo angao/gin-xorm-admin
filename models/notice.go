@@ -7,11 +7,11 @@ import (
 // Notice 通知公告
 type Notice struct {
 	// 主键
-	ID int64 `json:"id" form:"id" xorm:"id"`
+	ID int64 `json:"id" form:"id" xorm:"pk id"`
 	// 标题
 	Title string `json:"title" form:"title"`
 	// 类型
-	Type string `json:"type" form:"type"`
+	Type int `json:"type" form:"type"`
 	// 内容
 	Content string `json:"content" form:"content"`
 	// 创建时间

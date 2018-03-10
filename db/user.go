@@ -83,14 +83,14 @@ func (UserDao) List(page forms.Page) ([]UserBean, error) {
 
 // Save is save one user
 func (UserDao) Save(user models.User) error {
-	_, err := x.Table("sys_user").Insert(&user)
+	_, err := x.Insert(&user)
 	return err
 }
 
 // Delete is delete a user
 func (UserDao) Delete(id int64) error {
 	user := new(models.User)
-	_, err := x.Table("sys_user").Id(id).Delete(user)
+	_, err := x.Id(id).Delete(user)
 	return err
 }
 

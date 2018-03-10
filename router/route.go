@@ -130,8 +130,12 @@ func Init(port string) {
 		noticeGroup.POST("/list", notice.List)
 
 		noticeGroup.GET("/notice_add", notice.ToAdd)
+		noticeGroup.POST("/add", notice.Add)
 
 		noticeGroup.GET("/notice_update/:noticeId", notice.ToEdit)
+		noticeGroup.POST("/update", notice.Edit)
+
+		noticeGroup.POST("/delete", notice.Delete)
 	}
 
 	router.Run(":" + port)
