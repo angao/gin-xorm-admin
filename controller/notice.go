@@ -14,7 +14,9 @@ import (
 )
 
 // NoticeController 通知
-type NoticeController struct{}
+type NoticeController struct {
+	NoticeDao db.NoticeDao
+}
 
 // Index notice home
 func (NoticeController) Index(c *gin.Context) {
@@ -22,7 +24,7 @@ func (NoticeController) Index(c *gin.Context) {
 }
 
 // List query all notice
-func (NoticeController) List(c *gin.Context) {
+func (nc NoticeController) List(c *gin.Context) {
 	page := forms.Page{}
 	if err := c.Bind(&page); err != nil {
 		r.JSON(c.Writer, http.StatusBadRequest, gin.H{
@@ -30,8 +32,7 @@ func (NoticeController) List(c *gin.Context) {
 		})
 		return
 	}
-	var noticeDao db.NoticeDao
-	notices, err := noticeDao.List(page)
+	notices, err := nc.NoticeDao.List(page)
 	if err != nil {
 		r.JSON(c.Writer, http.StatusInternalServerError, gin.H{
 			"message": err.Error(),
@@ -47,7 +48,7 @@ func (NoticeController) ToAdd(c *gin.Context) {
 }
 
 // Add save a notice
-func (NoticeController) Add(c *gin.Context) {
+func (nc NoticeController) Add(c *gin.Context) {
 	notice := models.Notice{}
 	if err := c.Bind(&notice); err != nil {
 		r.JSON(c.Writer, http.StatusBadRequest, gin.H{
@@ -59,8 +60,7 @@ func (NoticeController) Add(c *gin.Context) {
 	id, ok := session.Get("user_id").(int64)
 	if ok {
 		notice.Creater = id
-		var noticeDao db.NoticeDao
-		err := noticeDao.Save(notice)
+		err := nc.NoticeDao.Save(notice)
 		if err != nil {
 			r.JSON(c.Writer, http.StatusInternalServerError, gin.H{
 				"message": err.Error(),
@@ -76,7 +76,7 @@ func (NoticeController) Add(c *gin.Context) {
 }
 
 // ToEdit to edit page
-func (NoticeController) ToEdit(c *gin.Context) {
+func (nc NoticeController) ToEdit(c *gin.Context) {
 	noticeID := c.Param("noticeId")
 	id, err := strconv.ParseInt(noticeID, 10, 64)
 	if err != nil {
@@ -85,8 +85,7 @@ func (NoticeController) ToEdit(c *gin.Context) {
 		})
 		return
 	}
-	var noticeDao db.NoticeDao
-	notice, err := noticeDao.Get(id)
+	notice, err := nc.NoticeDao.Get(id)
 	if err != nil {
 		r.JSON(c.Writer, http.StatusInternalServerError, gin.H{
 			"message": err.Error(),
@@ -99,7 +98,7 @@ func (NoticeController) ToEdit(c *gin.Context) {
 }
 
 // Edit update notice
-func (NoticeController) Edit(c *gin.Context) {
+func (nc NoticeController) Edit(c *gin.Context) {
 	notice := models.Notice{}
 	if err := c.Bind(&notice); err != nil {
 		r.JSON(c.Writer, http.StatusBadRequest, gin.H{
@@ -111,8 +110,7 @@ func (NoticeController) Edit(c *gin.Context) {
 	id, ok := session.Get("user_id").(int64)
 	if ok {
 		notice.Creater = id
-		var noticeDao db.NoticeDao
-		err := noticeDao.Update(notice)
+		err := nc.NoticeDao.Update(notice)
 		if err != nil {
 			r.JSON(c.Writer, http.StatusInternalServerError, gin.H{
 				"message": err.Error(),
@@ -128,7 +126,7 @@ func (NoticeController) Edit(c *gin.Context) {
 }
 
 // Delete a notice
-func (NoticeController) Delete(c *gin.Context) {
+func (nc NoticeController) Delete(c *gin.Context) {
 	noticeID := c.PostForm("noticeId")
 	id, err := strconv.ParseInt(noticeID, 10, 64)
 	if err != nil {
@@ -137,8 +135,7 @@ func (NoticeController) Delete(c *gin.Context) {
 		})
 		return
 	}
-	var noticeDao db.NoticeDao
-	err = noticeDao.Delete(id)
+	err = nc.NoticeDao.Delete(id)
 	if err != nil {
 		r.JSON(c.Writer, http.StatusInternalServerError, gin.H{
 			"message": err.Error(),
