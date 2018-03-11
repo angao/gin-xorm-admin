@@ -49,7 +49,7 @@ func (ac AuthController) Login(c *gin.Context) {
 	}
 	if user.Password == passwd {
 		session := sessions.Default(c)
-		session.Set("user_id", user.Id)
+		session.Set("user_id", user.ID)
 		session.Save()
 		c.Redirect(http.StatusMovedPermanently, "/")
 	} else {

@@ -171,7 +171,7 @@ func (rc RoleController) RoleTreeListByUserID(c *gin.Context) {
 		})
 		return
 	}
-	if user.RoleId == "" {
+	if user.RoleID == "" {
 		roles, err := rc.RoleDao.QueryAllRole()
 		if err != nil {
 			r.JSON(c.Writer, http.StatusInternalServerError, gin.H{
@@ -182,7 +182,7 @@ func (rc RoleController) RoleTreeListByUserID(c *gin.Context) {
 		r.JSON(c.Writer, http.StatusOK, roles)
 		return
 	}
-	roleIds := strings.Split(user.RoleId, ",")
+	roleIds := strings.Split(user.RoleID, ",")
 	roles, err := rc.RoleDao.TreeListByRoleID(roleIds)
 	if err != nil {
 		r.JSON(c.Writer, http.StatusInternalServerError, gin.H{

@@ -13,7 +13,7 @@ SELECT
         ELSE
             '未知'
         END
-    ) sex,
+    ) sexname,
     u.email,
     u.phone,
     u.roleid,
@@ -27,7 +27,7 @@ SELECT
         WHEN u.`status` = 3 THEN
             '删除'
         END
-    ) status,
+    ) statusname,
     date_format(u.createtime, '%Y-%m-%d %T') AS createtime,
     r.name AS role_name,
     d.fullname AS dept_name

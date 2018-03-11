@@ -3,6 +3,7 @@ package controller
 import (
 	"net/http"
 	"strconv"
+	"time"
 
 	"github.com/angao/gin-xorm-admin/db"
 	"github.com/angao/gin-xorm-admin/forms"
@@ -121,37 +122,42 @@ func (uc UserController) ToRoleAssign(c *gin.Context) {
 
 // Add handle save user
 func (uc UserController) Add(c *gin.Context) {
-	var userAddForm forms.UserAddForm
-
-	if err := c.Bind(&userAddForm); err != nil {
+	birthday := c.PostForm("birthday")
+	var user models.User
+	if err := c.Bind(&user); err != nil {
 		r.JSON(c.Writer, http.StatusBadRequest, gin.H{
 			"error": err.Error(),
 		})
 		return
 	}
-	if userAddForm.Password != userAddForm.RePassword {
+	if user.Password != user.RePassword {
 		r.JSON(c.Writer, http.StatusBadRequest, gin.H{
 			"error": "密码不一致",
 		})
 		return
 	}
+	if birthday != "" {
+		b, err := time.Parse("2006-01-02", birthday)
+		if err != nil {
+			r.JSON(c.Writer, http.StatusBadRequest, gin.H{
+				"error": err.Error(),
+			})
+			return
+		}
+		user.Birthday = b
+	}
 
 	salt := utils.RandomString(5)
-	password, err := utils.Encrypt(userAddForm.Password, salt)
+	password, err := utils.Encrypt(user.Password, salt)
 	if err != nil {
 		r.JSON(c.Writer, http.StatusInternalServerError, gin.H{
 			"error": err.Error(),
 		})
 		return
 	}
-	user := models.User{
-		Name:     userAddForm.Name,
-		Account:  userAddForm.Account,
-		Email:    userAddForm.Email,
-		Sex:      userAddForm.Sex,
-		Password: password,
-		Salt:     salt,
-	}
+	user.Salt = salt
+	user.Password = password
+	user.Status = 1
 	err = uc.UserDao.Save(user)
 	if err != nil {
 		r.JSON(c.Writer, http.StatusInternalServerError, gin.H{
@@ -204,7 +210,7 @@ func (uc UserController) Reset(c *gin.Context) {
 		})
 		return
 	}
-	user.Id = pid
+	user.ID = pid
 	password, err := utils.Encrypt("111111", user.Salt)
 	if err != nil {
 		r.JSON(c.Writer, http.StatusInternalServerError, gin.H{
@@ -250,7 +256,7 @@ func (uc UserController) SetRole(c *gin.Context) {
 		})
 		return
 	}
-	user.RoleId = roleIDs
+	user.RoleID = roleIDs
 	err = uc.UserDao.Update(user)
 	if err != nil {
 		r.JSON(c.Writer, http.StatusInternalServerError, gin.H{

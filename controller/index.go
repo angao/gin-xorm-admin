@@ -35,7 +35,7 @@ func (ic IndexController) Home(c *gin.Context) {
 			})
 			return
 		}
-		roleIDs := strings.Split(user.User.RoleId, ",")
+		roleIDs := strings.Split(user.User.RoleID, ",")
 		menus, err := ic.MenuDao.GetMenuByRoleIds(roleIDs)
 		if err != nil {
 			r.JSON(c.Writer, http.StatusInternalServerError, gin.H{

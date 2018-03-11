@@ -17,7 +17,7 @@
                 Feng.error("分配角色失败!" + data.responseJSON.message + "!");
             });
             ajax.set("roleIds", ids);
-            ajax.set("userId", "{{ .user.Id }}");
+            ajax.set("userId", "{{ .user.ID }}");
             ajax.start();
         });
 
@@ -40,7 +40,7 @@
             }
         };
 
-        var ztree = new $ZTree("zTree", "/role/roleTreeListByUserId/{{ .user.Id }}");
+        var ztree = new $ZTree("zTree", "/role/roleTreeListByUserId/{{ .user.ID }}");
         ztree.setSettings(setting);
         ztree.init();
     }

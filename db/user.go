@@ -2,7 +2,6 @@ package db
 
 import (
 	"errors"
-	"time"
 
 	"github.com/angao/gin-xorm-admin/forms"
 	"github.com/angao/gin-xorm-admin/models"
@@ -13,28 +12,12 @@ import (
 type UserDao struct {
 }
 
-// UserBean for form
-type UserBean struct {
-	ID         int64 `json:"Id" xorm:"id"`
-	Avatar     string
-	Account    string
-	Name       string
-	Birthday   time.Time
-	Sex        string
-	Email      string
-	Phone      string
-	RoleID     string `json:"RoleId" xorm:"roleid"`
-	RoleName   string
-	DeptID     int `json:"DeptId" xorm:"deptid"`
-	DeptName   string
-	Status     string
-	CreateTime string `xorm:"'createtime'"`
-}
+var usercols = []string{"id", "avatar", "account", "password", "salt", "name", "birthday", "sex", "email", "phone", "roleid", "deptid", "status", "createtime"}
 
 // GetUser query user by account
 func (UserDao) GetUser(account string) (*models.User, error) {
 	user := new(models.User)
-	has, err := x.Table("sys_user").Where("account = ?", account).Get(user)
+	has, err := x.Cols(usercols...).Where("account = ?", account).Get(user)
 	if err != nil {
 		return nil, err
 	}
@@ -47,7 +30,7 @@ func (UserDao) GetUser(account string) (*models.User, error) {
 // GetUserByID query user by id
 func (UserDao) GetUserByID(id int64) (*models.User, error) {
 	user := new(models.User)
-	has, err := x.Table("sys_user").Where("id = ?", id).Get(user)
+	has, err := x.Cols(usercols...).Where("id = ?", id).Get(user)
 	if err != nil {
 		return nil, err
 	}
@@ -71,8 +54,8 @@ func (UserDao) GetUserRole(id int64) (*models.UserRole, error) {
 }
 
 // List query all user
-func (UserDao) List(page forms.Page) ([]UserBean, error) {
-	users := make([]UserBean, 0)
+func (UserDao) List(page forms.Page) ([]models.User, error) {
+	users := make([]models.User, 0)
 	param := utils.StructToMap(page)
 	err := x.SqlTemplateClient("user.all.sql", &param).Find(&users)
 	if err != nil {
@@ -96,7 +79,6 @@ func (UserDao) Delete(id int64) error {
 
 // Update user
 func (UserDao) Update(user *models.User) error {
-	cols := []string{"id", "avatar", "account", "password", "salt", "name", "birthday", "sex", "email", "phone", "roleid", "deptid", "status", "createtime"}
-	_, err := x.Table("sys_user").Id(user.Id).Cols(cols...).Update(user)
+	_, err := x.Id(user.ID).Cols(usercols...).Update(user)
 	return err
 }
