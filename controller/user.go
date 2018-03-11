@@ -14,6 +14,7 @@ import (
 
 // UserController handle user request
 type UserController struct {
+	UserDao db.UserDao
 }
 
 // Home user home page
@@ -22,9 +23,7 @@ func (UserController) Home(c *gin.Context) {
 }
 
 // List query all user
-func (UserController) List(c *gin.Context) {
-	var userDao db.UserDao
-
+func (uc UserController) List(c *gin.Context) {
 	var page forms.Page
 	if err := c.Bind(&page); err != nil {
 		r.JSON(c.Writer, http.StatusBadRequest, gin.H{
@@ -33,7 +32,7 @@ func (UserController) List(c *gin.Context) {
 		return
 	}
 
-	users, err := userDao.List(page)
+	users, err := uc.UserDao.List(page)
 	if err != nil {
 		r.JSON(c.Writer, http.StatusInternalServerError, gin.H{
 			"error": err.Error(),
@@ -46,14 +45,13 @@ func (UserController) List(c *gin.Context) {
 }
 
 // Info is handle user info
-func (UserController) Info(c *gin.Context) {
-	var userDao db.UserDao
+func (uc UserController) Info(c *gin.Context) {
 	var err error
 	var user *models.UserRole
 	session := sessions.Default(c)
 	id, ok := session.Get("user_id").(int64)
 	if ok {
-		user, err = userDao.GetUserRole(id)
+		user, err = uc.UserDao.GetUserRole(id)
 		if err != nil {
 			r.JSON(c.Writer, http.StatusInternalServerError, gin.H{
 				"error": err.Error(),
@@ -77,15 +75,8 @@ func (UserController) ToAdd(c *gin.Context) {
 }
 
 // ToEdit handle edit user paget
-func (UserController) ToEdit(c *gin.Context) {
+func (uc UserController) ToEdit(c *gin.Context) {
 	id := c.Param("id")
-	if id == "" {
-		r.JSON(c.Writer, http.StatusBadRequest, gin.H{
-			"error": "参数错误",
-		})
-		return
-	}
-	var userDao db.UserDao
 	pid, err := strconv.ParseInt(id, 10, 64)
 	if err != nil {
 		r.JSON(c.Writer, http.StatusInternalServerError, gin.H{
@@ -93,7 +84,7 @@ func (UserController) ToEdit(c *gin.Context) {
 		})
 		return
 	}
-	user, err := userDao.GetUserRole(pid)
+	user, err := uc.UserDao.GetUserRole(pid)
 	if err != nil {
 		r.JSON(c.Writer, http.StatusInternalServerError, gin.H{
 			"error": err.Error(),
@@ -107,15 +98,8 @@ func (UserController) ToEdit(c *gin.Context) {
 }
 
 // ToRoleAssign handle user role
-func (UserController) ToRoleAssign(c *gin.Context) {
+func (uc UserController) ToRoleAssign(c *gin.Context) {
 	id := c.Param("id")
-	if id == "" {
-		r.JSON(c.Writer, http.StatusBadRequest, gin.H{
-			"error": "参数错误",
-		})
-		return
-	}
-	var userDao db.UserDao
 	pid, err := strconv.ParseInt(id, 10, 64)
 	if err != nil {
 		r.JSON(c.Writer, http.StatusInternalServerError, gin.H{
@@ -123,7 +107,7 @@ func (UserController) ToRoleAssign(c *gin.Context) {
 		})
 		return
 	}
-	user, err := userDao.GetUserByID(pid)
+	user, err := uc.UserDao.GetUserByID(pid)
 	if err != nil {
 		r.JSON(c.Writer, http.StatusInternalServerError, gin.H{
 			"error": err.Error(),
@@ -136,8 +120,7 @@ func (UserController) ToRoleAssign(c *gin.Context) {
 }
 
 // Add handle save user
-func (UserController) Add(c *gin.Context) {
-	var userDao db.UserDao
+func (uc UserController) Add(c *gin.Context) {
 	var userAddForm forms.UserAddForm
 
 	if err := c.Bind(&userAddForm); err != nil {
@@ -169,7 +152,7 @@ func (UserController) Add(c *gin.Context) {
 		Password: password,
 		Salt:     salt,
 	}
-	err = userDao.Save(user)
+	err = uc.UserDao.Save(user)
 	if err != nil {
 		r.JSON(c.Writer, http.StatusInternalServerError, gin.H{
 			"error": err.Error(),
@@ -182,15 +165,8 @@ func (UserController) Add(c *gin.Context) {
 }
 
 // Delete 删除用户
-func (UserController) Delete(c *gin.Context) {
+func (uc UserController) Delete(c *gin.Context) {
 	id := c.PostForm("userId")
-	if id == "" {
-		r.JSON(c.Writer, http.StatusBadRequest, gin.H{
-			"message": "参数错误",
-		})
-		return
-	}
-	var userDao db.UserDao
 	pid, err := strconv.ParseInt(id, 10, 64)
 	if err != nil {
 		r.JSON(c.Writer, http.StatusInternalServerError, gin.H{
@@ -198,7 +174,7 @@ func (UserController) Delete(c *gin.Context) {
 		})
 		return
 	}
-	err = userDao.Delete(pid)
+	err = uc.UserDao.Delete(pid)
 	if err != nil {
 		r.JSON(c.Writer, http.StatusInternalServerError, gin.H{
 			"message": err.Error(),
@@ -211,15 +187,8 @@ func (UserController) Delete(c *gin.Context) {
 }
 
 // Reset password
-func (UserController) Reset(c *gin.Context) {
+func (uc UserController) Reset(c *gin.Context) {
 	id := c.PostForm("userId")
-	if id == "" {
-		r.JSON(c.Writer, http.StatusBadRequest, gin.H{
-			"message": "参数错误",
-		})
-		return
-	}
-	var userDao db.UserDao
 	pid, err := strconv.ParseInt(id, 10, 64)
 	if err != nil {
 		r.JSON(c.Writer, http.StatusInternalServerError, gin.H{
@@ -228,7 +197,7 @@ func (UserController) Reset(c *gin.Context) {
 		return
 	}
 	var user *models.User
-	user, err = userDao.GetUserByID(pid)
+	user, err = uc.UserDao.GetUserByID(pid)
 	if err != nil {
 		r.JSON(c.Writer, http.StatusInternalServerError, gin.H{
 			"message": err.Error(),
@@ -244,7 +213,7 @@ func (UserController) Reset(c *gin.Context) {
 		return
 	}
 	user.Password = password
-	err = userDao.Update(user)
+	err = uc.UserDao.Update(user)
 	if err != nil {
 		r.JSON(c.Writer, http.StatusInternalServerError, gin.H{
 			"message": err.Error(),
@@ -257,7 +226,7 @@ func (UserController) Reset(c *gin.Context) {
 }
 
 // SetRole set user role
-func (UserController) SetRole(c *gin.Context) {
+func (uc UserController) SetRole(c *gin.Context) {
 	roleIDs := c.PostForm("roleIds")
 	userID := c.PostForm("userId")
 
@@ -267,7 +236,6 @@ func (UserController) SetRole(c *gin.Context) {
 		})
 		return
 	}
-	var userDao db.UserDao
 	id, err := strconv.ParseInt(userID, 10, 64)
 	if err != nil {
 		r.JSON(c.Writer, http.StatusBadRequest, gin.H{
@@ -275,7 +243,7 @@ func (UserController) SetRole(c *gin.Context) {
 		})
 		return
 	}
-	user, err := userDao.GetUserByID(id)
+	user, err := uc.UserDao.GetUserByID(id)
 	if err != nil {
 		r.JSON(c.Writer, http.StatusInternalServerError, gin.H{
 			"error": err.Error(),
@@ -283,7 +251,7 @@ func (UserController) SetRole(c *gin.Context) {
 		return
 	}
 	user.RoleId = roleIDs
-	err = userDao.Update(user)
+	err = uc.UserDao.Update(user)
 	if err != nil {
 		r.JSON(c.Writer, http.StatusInternalServerError, gin.H{
 			"message": err.Error(),
@@ -296,15 +264,8 @@ func (UserController) SetRole(c *gin.Context) {
 }
 
 // Freeze user
-func (UserController) Freeze(c *gin.Context) {
+func (uc UserController) Freeze(c *gin.Context) {
 	userID := c.PostForm("userId")
-	if userID == "" {
-		r.JSON(c.Writer, http.StatusBadRequest, gin.H{
-			"message": "参数错误",
-		})
-		return
-	}
-	var userDao db.UserDao
 	id, err := strconv.ParseInt(userID, 10, 64)
 	if err != nil {
 		r.JSON(c.Writer, http.StatusBadRequest, gin.H{
@@ -312,7 +273,7 @@ func (UserController) Freeze(c *gin.Context) {
 		})
 		return
 	}
-	user, err := userDao.GetUserByID(id)
+	user, err := uc.UserDao.GetUserByID(id)
 	if err != nil {
 		r.JSON(c.Writer, http.StatusInternalServerError, gin.H{
 			"error": err.Error(),
@@ -320,7 +281,7 @@ func (UserController) Freeze(c *gin.Context) {
 		return
 	}
 	user.Status = 2
-	err = userDao.Update(user)
+	err = uc.UserDao.Update(user)
 	if err != nil {
 		r.JSON(c.Writer, http.StatusInternalServerError, gin.H{
 			"message": err.Error(),
@@ -333,15 +294,8 @@ func (UserController) Freeze(c *gin.Context) {
 }
 
 // UnFreeze user
-func (UserController) UnFreeze(c *gin.Context) {
+func (uc UserController) UnFreeze(c *gin.Context) {
 	userID := c.PostForm("userId")
-	if userID == "" {
-		r.JSON(c.Writer, http.StatusBadRequest, gin.H{
-			"message": "参数错误",
-		})
-		return
-	}
-	var userDao db.UserDao
 	id, err := strconv.ParseInt(userID, 10, 64)
 	if err != nil {
 		r.JSON(c.Writer, http.StatusBadRequest, gin.H{
@@ -349,7 +303,7 @@ func (UserController) UnFreeze(c *gin.Context) {
 		})
 		return
 	}
-	user, err := userDao.GetUserByID(id)
+	user, err := uc.UserDao.GetUserByID(id)
 	if err != nil {
 		r.JSON(c.Writer, http.StatusInternalServerError, gin.H{
 			"error": err.Error(),
@@ -357,7 +311,7 @@ func (UserController) UnFreeze(c *gin.Context) {
 		return
 	}
 	user.Status = 1
-	err = userDao.Update(user)
+	err = uc.UserDao.Update(user)
 	if err != nil {
 		r.JSON(c.Writer, http.StatusInternalServerError, gin.H{
 			"message": err.Error(),
@@ -375,7 +329,7 @@ func (UserController) ToChangePasswd(c *gin.Context) {
 }
 
 // ChangePwd change password
-func (UserController) ChangePwd(c *gin.Context) {
+func (uc UserController) ChangePwd(c *gin.Context) {
 	oldPwd := c.PostForm("oldPwd")
 	newPwd := c.PostForm("newPwd")
 	rePwd := c.PostForm("rePwd")
@@ -388,8 +342,7 @@ func (UserController) ChangePwd(c *gin.Context) {
 	session := sessions.Default(c)
 	id, ok := session.Get("user_id").(int64)
 	if ok {
-		var userDao db.UserDao
-		user, err := userDao.GetUserByID(id)
+		user, err := uc.UserDao.GetUserByID(id)
 		if err != nil {
 			r.JSON(c.Writer, http.StatusInternalServerError, gin.H{
 				"error": err.Error(),
@@ -404,7 +357,7 @@ func (UserController) ChangePwd(c *gin.Context) {
 			return
 		}
 		user.Password = password
-		err = userDao.Update(user)
+		err = uc.UserDao.Update(user)
 		if err != nil {
 			r.JSON(c.Writer, http.StatusInternalServerError, gin.H{
 				"message": err.Error(),

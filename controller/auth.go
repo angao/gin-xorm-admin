@@ -12,6 +12,7 @@ import (
 
 // AuthController handle auth request
 type AuthController struct {
+	UserDao db.UserDao
 }
 
 // ToLogin to login page
@@ -22,7 +23,7 @@ func (AuthController) ToLogin(c *gin.Context) {
 }
 
 // Login handle login
-func (AuthController) Login(c *gin.Context) {
+func (ac AuthController) Login(c *gin.Context) {
 	username := c.PostForm("username")
 	password := c.PostForm("password")
 	if username == "" || password == "" {
@@ -32,8 +33,7 @@ func (AuthController) Login(c *gin.Context) {
 		return
 	}
 
-	var userDao db.UserDao
-	user, err := userDao.GetUser(username)
+	user, err := ac.UserDao.GetUser(username)
 	if err != nil {
 		r.HTML(c.Writer, http.StatusUnauthorized, "login.html", gin.H{
 			"tips": err.Error(),

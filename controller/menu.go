@@ -12,6 +12,7 @@ import (
 
 // MenuController handle menu request
 type MenuController struct {
+	MenuDao db.MenuDao
 }
 
 // Index handle /menu
@@ -20,8 +21,7 @@ func (MenuController) Index(c *gin.Context) {
 }
 
 // List query all menu
-func (MenuController) List(c *gin.Context) {
-	var menuDao db.MenuDao
+func (mc MenuController) List(c *gin.Context) {
 	var page forms.Page
 	if err := c.Bind(&page); err != nil {
 		r.JSON(c.Writer, http.StatusBadRequest, gin.H{
@@ -29,7 +29,7 @@ func (MenuController) List(c *gin.Context) {
 		})
 		return
 	}
-	menus, err := menuDao.List(page)
+	menus, err := mc.MenuDao.List(page)
 	if err != nil {
 		r.JSON(c.Writer, http.StatusInternalServerError, gin.H{
 			"error": err.Error(),
@@ -40,7 +40,7 @@ func (MenuController) List(c *gin.Context) {
 }
 
 // Remove delete menu
-func (MenuController) Remove(c *gin.Context) {
+func (mc MenuController) Remove(c *gin.Context) {
 	menuID := c.PostForm("menuId")
 	if menuID == "" {
 		r.JSON(c.Writer, http.StatusBadRequest, gin.H{
@@ -48,7 +48,6 @@ func (MenuController) Remove(c *gin.Context) {
 		})
 		return
 	}
-	var menuDao db.MenuDao
 	id, err := strconv.ParseInt(menuID, 10, 64)
 	if err != nil {
 		r.JSON(c.Writer, http.StatusBadRequest, gin.H{
@@ -56,7 +55,7 @@ func (MenuController) Remove(c *gin.Context) {
 		})
 		return
 	}
-	err = menuDao.Delete(id)
+	err = mc.MenuDao.Delete(id)
 	if err != nil {
 		r.JSON(c.Writer, http.StatusInternalServerError, gin.H{
 			"message": err.Error(),
@@ -74,10 +73,8 @@ func (MenuController) ToAdd(c *gin.Context) {
 }
 
 // SelectMenuTreeList query menu
-func (MenuController) SelectMenuTreeList(c *gin.Context) {
-	var menuDao db.MenuDao
-
-	menus, err := menuDao.SelectMenuTreeList()
+func (mc MenuController) SelectMenuTreeList(c *gin.Context) {
+	menus, err := mc.MenuDao.SelectMenuTreeList()
 	if err != nil {
 		r.JSON(c.Writer, http.StatusInternalServerError, gin.H{
 			"message": err.Error(),
@@ -95,14 +92,8 @@ func (MenuController) SelectMenuTreeList(c *gin.Context) {
 }
 
 // ToEdit update menu
-func (MenuController) ToEdit(c *gin.Context) {
+func (mc MenuController) ToEdit(c *gin.Context) {
 	menuID := c.Param("menuId")
-	if menuID == "" {
-		r.JSON(c.Writer, http.StatusBadRequest, gin.H{
-			"message": "参数错误",
-		})
-		return
-	}
 	id, err := strconv.ParseInt(menuID, 10, 64)
 	if err != nil {
 		r.JSON(c.Writer, http.StatusBadRequest, gin.H{
@@ -110,8 +101,7 @@ func (MenuController) ToEdit(c *gin.Context) {
 		})
 		return
 	}
-	var menuDao db.MenuDao
-	menu, err := menuDao.Get(id)
+	menu, err := mc.MenuDao.Get(id)
 	if err != nil {
 		r.JSON(c.Writer, http.StatusInternalServerError, gin.H{
 			"message": err.Error(),
@@ -120,7 +110,7 @@ func (MenuController) ToEdit(c *gin.Context) {
 	}
 
 	if menu.Pcode != "0" {
-		pMenu, err := menuDao.GetByPcode(menu.Pcode)
+		pMenu, err := mc.MenuDao.GetByPcode(menu.Pcode)
 		if err != nil {
 			r.JSON(c.Writer, http.StatusInternalServerError, gin.H{
 				"message": err.Error(),
@@ -137,7 +127,7 @@ func (MenuController) ToEdit(c *gin.Context) {
 }
 
 // Add add a menu
-func (MenuController) Add(c *gin.Context) {
+func (mc MenuController) Add(c *gin.Context) {
 	var menu models.Menu
 	if err := c.Bind(&menu); err != nil {
 		r.JSON(c.Writer, http.StatusBadRequest, gin.H{
@@ -152,8 +142,7 @@ func (MenuController) Add(c *gin.Context) {
 		})
 		return
 	}
-	var menuDao db.MenuDao
-	err = menuDao.Save(menu)
+	err = mc.MenuDao.Save(menu)
 	if err != nil {
 		r.JSON(c.Writer, http.StatusInternalServerError, gin.H{
 			"message": err.Error(),
@@ -166,7 +155,7 @@ func (MenuController) Add(c *gin.Context) {
 }
 
 // Edit update menu
-func (MenuController) Edit(c *gin.Context) {
+func (mc MenuController) Edit(c *gin.Context) {
 	var menu models.Menu
 	if err := c.Bind(&menu); err != nil {
 		r.JSON(c.Writer, http.StatusBadRequest, gin.H{
@@ -181,8 +170,7 @@ func (MenuController) Edit(c *gin.Context) {
 		})
 		return
 	}
-	var menuDao db.MenuDao
-	err = menuDao.Update(menu)
+	err = mc.MenuDao.Update(menu)
 	if err != nil {
 		r.JSON(c.Writer, http.StatusInternalServerError, gin.H{
 			"message": err.Error(),
@@ -195,14 +183,8 @@ func (MenuController) Edit(c *gin.Context) {
 }
 
 // TreeListByRoleID query menu by roleid
-func (MenuController) TreeListByRoleID(c *gin.Context) {
+func (mc MenuController) TreeListByRoleID(c *gin.Context) {
 	roleID := c.Param("roleId")
-	if roleID == "" {
-		r.JSON(c.Writer, http.StatusBadRequest, gin.H{
-			"message": "参数错误",
-		})
-		return
-	}
 	id, err := strconv.ParseInt(roleID, 10, 64)
 	if err != nil {
 		r.JSON(c.Writer, http.StatusBadRequest, gin.H{
@@ -210,8 +192,7 @@ func (MenuController) TreeListByRoleID(c *gin.Context) {
 		})
 		return
 	}
-	var menuDao db.MenuDao
-	menuIDs, err := menuDao.GetMenuIdsByRoleID(id)
+	menuIDs, err := mc.MenuDao.GetMenuIdsByRoleID(id)
 	if err != nil {
 		r.JSON(c.Writer, http.StatusInternalServerError, gin.H{
 			"message": err.Error(),
@@ -219,7 +200,7 @@ func (MenuController) TreeListByRoleID(c *gin.Context) {
 		return
 	}
 	if len(menuIDs) == 0 {
-		nodes, err := menuDao.SelectMenuTreeList()
+		nodes, err := mc.MenuDao.SelectMenuTreeList()
 		if err != nil {
 			r.JSON(c.Writer, http.StatusInternalServerError, gin.H{
 				"message": err.Error(),
@@ -229,7 +210,7 @@ func (MenuController) TreeListByRoleID(c *gin.Context) {
 		r.JSON(c.Writer, http.StatusOK, nodes)
 		return
 	}
-	nodes, err := menuDao.GetMenusByMenuIDs(menuIDs)
+	nodes, err := mc.MenuDao.GetMenusByMenuIDs(menuIDs)
 	if err != nil {
 		r.JSON(c.Writer, http.StatusInternalServerError, gin.H{
 			"message": err.Error(),

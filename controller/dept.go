@@ -11,13 +11,13 @@ import (
 )
 
 // DeptController operate dept
-type DeptController struct{}
+type DeptController struct {
+	DeptDao db.DeptDao
+}
 
 // Tree query dept
-func (DeptController) Tree(c *gin.Context) {
-	var deptDao db.DeptDao
-
-	depts, err := deptDao.List("")
+func (dc DeptController) Tree(c *gin.Context) {
+	depts, err := dc.DeptDao.List("")
 	if err != nil {
 		r.JSON(c.Writer, http.StatusInternalServerError, gin.H{
 			"error": err.Error(),
@@ -34,10 +34,9 @@ func (DeptController) Index(c *gin.Context) {
 }
 
 // List query all dept
-func (DeptController) List(c *gin.Context) {
+func (dc DeptController) List(c *gin.Context) {
 	name := c.PostForm("condition")
-	var deptDao db.DeptDao
-	depts, err := deptDao.List(name)
+	depts, err := dc.DeptDao.List(name)
 	if err != nil {
 		r.JSON(c.Writer, http.StatusInternalServerError, gin.H{
 			"error": err.Error(),
@@ -53,7 +52,7 @@ func (DeptController) ToAdd(c *gin.Context) {
 }
 
 // Add add dept
-func (DeptController) Add(c *gin.Context) {
+func (dc DeptController) Add(c *gin.Context) {
 	var dept models.Dept
 	if err := c.Bind(&dept); err != nil {
 		r.JSON(c.Writer, http.StatusBadRequest, gin.H{
@@ -67,15 +66,14 @@ func (DeptController) Add(c *gin.Context) {
 		})
 		return
 	}
-	var deptDao db.DeptDao
-	dept, err := deptSetPid(dept, deptDao)
+	dept, err := deptSetPid(dept, dc.DeptDao)
 	if err != nil {
 		r.JSON(c.Writer, http.StatusInternalServerError, gin.H{
 			"error": err.Error(),
 		})
 		return
 	}
-	err = deptDao.Save(dept)
+	err = dc.DeptDao.Save(dept)
 	if err != nil {
 		r.JSON(c.Writer, http.StatusInternalServerError, gin.H{
 			"error": err.Error(),
@@ -88,7 +86,7 @@ func (DeptController) Add(c *gin.Context) {
 }
 
 // ToEdit to edit page
-func (DeptController) ToEdit(c *gin.Context) {
+func (dc DeptController) ToEdit(c *gin.Context) {
 	deptID := c.Param("deptId")
 	id, err := strconv.ParseInt(deptID, 10, 64)
 	if err != nil {
@@ -97,8 +95,7 @@ func (DeptController) ToEdit(c *gin.Context) {
 		})
 		return
 	}
-	var deptDao db.DeptDao
-	dept, err := deptDao.Get(id)
+	dept, err := dc.DeptDao.Get(id)
 	if err != nil {
 		r.JSON(c.Writer, http.StatusInternalServerError, gin.H{
 			"message": err.Error(),
@@ -111,7 +108,7 @@ func (DeptController) ToEdit(c *gin.Context) {
 }
 
 // Edit update dept
-func (DeptController) Edit(c *gin.Context) {
+func (dc DeptController) Edit(c *gin.Context) {
 	var dept models.Dept
 	if err := c.Bind(&dept); err != nil {
 		r.JSON(c.Writer, http.StatusBadRequest, gin.H{
@@ -125,9 +122,7 @@ func (DeptController) Edit(c *gin.Context) {
 		})
 		return
 	}
-	var deptDao db.DeptDao
-
-	dept, err := deptSetPid(dept, deptDao)
+	dept, err := deptSetPid(dept, dc.DeptDao)
 	if err != nil {
 		r.JSON(c.Writer, http.StatusInternalServerError, gin.H{
 			"error": err.Error(),
@@ -135,7 +130,7 @@ func (DeptController) Edit(c *gin.Context) {
 		return
 	}
 
-	err = deptDao.Update(dept)
+	err = dc.DeptDao.Update(dept)
 	if err != nil {
 		r.JSON(c.Writer, http.StatusInternalServerError, gin.H{
 			"error": err.Error(),
@@ -148,7 +143,7 @@ func (DeptController) Edit(c *gin.Context) {
 }
 
 //Delete dept
-func (DeptController) Delete(c *gin.Context) {
+func (dc DeptController) Delete(c *gin.Context) {
 	deptID := c.PostForm("deptId")
 	id, err := strconv.ParseInt(deptID, 10, 64)
 	if err != nil {
@@ -157,8 +152,7 @@ func (DeptController) Delete(c *gin.Context) {
 		})
 		return
 	}
-	var deptDao db.DeptDao
-	err = deptDao.Delete(id)
+	err = dc.DeptDao.Delete(id)
 	if err != nil {
 		r.JSON(c.Writer, http.StatusInternalServerError, gin.H{
 			"message": err.Error(),

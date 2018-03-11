@@ -15,19 +15,20 @@ import (
 
 // IndexController is handle home page request
 type IndexController struct {
+	UserDao   db.UserDao
+	MenuDao   db.MenuDao
+	NoticeDao db.NoticeDao
 }
 
 // Home is handle "/" request
-func (IndexController) Home(c *gin.Context) {
+func (ic IndexController) Home(c *gin.Context) {
 	session := sessions.Default(c)
 	var user *models.UserRole
 	var err error
 
 	userID, ok := session.Get("user_id").(int64)
 	if ok {
-		var userDao db.UserDao
-		var menuDao db.MenuDao
-		user, err = userDao.GetUserRole(userID)
+		user, err = ic.UserDao.GetUserRole(userID)
 		if err != nil {
 			r.HTML(c.Writer, http.StatusInternalServerError, "index.html", gin.H{
 				"username": user.User.Name,
@@ -35,7 +36,7 @@ func (IndexController) Home(c *gin.Context) {
 			return
 		}
 		roleIDs := strings.Split(user.User.RoleId, ",")
-		menus, err := menuDao.GetMenuByRoleIds(roleIDs)
+		menus, err := ic.MenuDao.GetMenuByRoleIds(roleIDs)
 		if err != nil {
 			r.JSON(c.Writer, http.StatusInternalServerError, gin.H{
 				"message": err.Error(),
@@ -52,10 +53,9 @@ func (IndexController) Home(c *gin.Context) {
 }
 
 // BlackBoard is handle "/blackboard"
-func (IndexController) BlackBoard(c *gin.Context) {
-	var noticeDao db.NoticeDao
+func (ic IndexController) BlackBoard(c *gin.Context) {
 	page := forms.Page{}
-	notices, err := noticeDao.List(page)
+	notices, err := ic.NoticeDao.List(page)
 	if err != nil {
 		r.JSON(c.Writer, http.StatusInternalServerError, gin.H{
 			"message": err.Error(),
