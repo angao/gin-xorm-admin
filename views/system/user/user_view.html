@@ -11,7 +11,7 @@
                         <div class="ibox-content" style="border:none !important; ">
                             <div class="form-horizontal bv-form" id="userInfoForm" novalidate="novalidate">
                                 <button type="submit" class="bv-hidden-submit" style="display: none; width: 0px; height: 0px;"></button>
-                                <input type="hidden" id="id" value="{{ .user.Id }}">
+                                <input type="hidden" id="id" value="{{ .user.ID }}">
                                 <input type="hidden" id="sexValue" value="{{ .user.Sex }}">
                                 <div class="row">
                                     <div class="col-sm-6 b-r">
@@ -103,7 +103,7 @@
                                                     <input class="form-control" id="citySel" name="citySel" value="战略部" type="text" readonly="readonly" onclick="UserInfoDlg.showInfoDeptSelectTree(); return false;"
                                                         style="background-color: #ffffff !important;" data-bv-field="citySel">
                                                     <i class="form-control-feedback" data-bv-icon-for="citySel" style="display: none;"></i>
-                                                    <input class="form-control" type="hidden" id="deptid" value="{{ .user.DeptId }}">
+                                                    <input class="form-control" type="hidden" id="deptid" value="{{ .user.DeptID }}">
                                                     <div id="menuContent" style="display: none; position: absolute; z-index: 200;">
                                                         <ul id="treeDemo" class="ztree tree-box" style="width:250px !important;">
                                                         </ul>

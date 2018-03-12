@@ -3,8 +3,6 @@ package main
 import (
 	"flag"
 
-	_ "net/http/pprof"
-
 	"github.com/gin-gonic/gin"
 
 	_ "github.com/angao/gin-xorm-admin/db"
