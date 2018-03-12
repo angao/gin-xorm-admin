@@ -3,7 +3,6 @@ package db
 import (
 	"errors"
 
-	"github.com/angao/gin-xorm-admin/forms"
 	"github.com/angao/gin-xorm-admin/models"
 	"github.com/angao/gin-xorm-admin/utils"
 )
@@ -34,7 +33,7 @@ func (MenuDao) GetMenuByRoleIds(roleIDs []string) ([]models.Menu, error) {
 }
 
 // List query menu
-func (MenuDao) List(page forms.Page) ([]models.Menu, error) {
+func (MenuDao) List(page models.Page) ([]models.Menu, error) {
 	var menus []models.Menu
 	param := utils.StructToMap(page)
 	err := x.SqlTemplateClient("menu.list.sql", &param).Find(&menus)

@@ -3,7 +3,6 @@ package db
 import (
 	"errors"
 
-	"github.com/angao/gin-xorm-admin/forms"
 	"github.com/angao/gin-xorm-admin/models"
 	"github.com/angao/gin-xorm-admin/utils"
 )
@@ -54,7 +53,7 @@ func (UserDao) GetUserRole(id int64) (*models.UserRole, error) {
 }
 
 // List query all user
-func (UserDao) List(page forms.Page) ([]models.User, error) {
+func (UserDao) List(page models.Page) ([]models.User, error) {
 	users := make([]models.User, 0)
 	param := utils.StructToMap(page)
 	err := x.SqlTemplateClient("user.all.sql", &param).Find(&users)

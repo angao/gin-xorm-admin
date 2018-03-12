@@ -5,7 +5,6 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/angao/gin-xorm-admin/forms"
 	"github.com/angao/gin-xorm-admin/models"
 	"github.com/angao/gin-xorm-admin/utils"
 )
@@ -24,7 +23,7 @@ func (RoleDao) QueryAllRole() ([]models.ZTreeNode, error) {
 }
 
 // List query all role containes dept
-func (RoleDao) List(page forms.Page) ([]models.Role, error) {
+func (RoleDao) List(page models.Page) ([]models.Role, error) {
 	var roles []models.Role
 	param := utils.StructToMap(page)
 	param["Id"] = 0

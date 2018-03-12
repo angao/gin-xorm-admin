@@ -1,4 +1,4 @@
-package forms
+package models
 
 // Page 分页
 type Page struct {

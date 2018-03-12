@@ -4,12 +4,9 @@ import (
 	"net/http"
 	"strconv"
 
+	"github.com/angao/gin-xorm-admin/db"
 	"github.com/angao/gin-xorm-admin/models"
 	"github.com/gin-contrib/sessions"
-
-	"github.com/angao/gin-xorm-admin/db"
-	"github.com/angao/gin-xorm-admin/forms"
-
 	"github.com/gin-gonic/gin"
 )
 
@@ -25,7 +22,7 @@ func (NoticeController) Index(c *gin.Context) {
 
 // List query all notice
 func (nc NoticeController) List(c *gin.Context) {
-	page := forms.Page{}
+	page := models.Page{}
 	if err := c.Bind(&page); err != nil {
 		r.JSON(c.Writer, http.StatusBadRequest, gin.H{
 			"message": err.Error(),

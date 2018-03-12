@@ -6,7 +6,6 @@ import (
 	"strings"
 
 	"github.com/angao/gin-xorm-admin/db"
-	"github.com/angao/gin-xorm-admin/forms"
 	"github.com/angao/gin-xorm-admin/models"
 	"github.com/gin-gonic/gin"
 )
@@ -24,7 +23,7 @@ func (RoleController) Index(c *gin.Context) {
 
 // List query all role
 func (rc RoleController) List(c *gin.Context) {
-	var page forms.Page
+	var page models.Page
 	if err := c.Bind(&page); err != nil {
 		r.JSON(c.Writer, http.StatusBadRequest, gin.H{
 			"error": err.Error(),
