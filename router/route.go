@@ -51,6 +51,7 @@ func Init(port string) {
 		userGroup.POST("/add", user.Add)
 
 		userGroup.GET("/user_edit/:id", user.ToEdit)
+		userGroup.POST("/edit", user.Edit)
 
 		userGroup.POST("/delete", user.Delete)
 

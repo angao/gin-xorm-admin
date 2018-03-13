@@ -91,9 +91,57 @@ func (uc UserController) ToEdit(c *gin.Context) {
 		})
 		return
 	}
+	birthday := user.User.Birthday.Format("2006-01-02")
 	r.HTML(c.Writer, http.StatusOK, "system/user/user_edit.html", gin.H{
 		"user":     user.User,
 		"roleName": user.Role.Name,
+		"birthday": birthday,
+	})
+}
+
+// Edit update user
+func (uc UserController) Edit(c *gin.Context) {
+	birthday := c.PostForm("birthday")
+	var user models.User
+	if err := c.Bind(&user); err != nil {
+		r.JSON(c.Writer, http.StatusBadRequest, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
+	if birthday != "" {
+		b, err := time.Parse("2006-01-02", birthday)
+		if err != nil {
+			r.JSON(c.Writer, http.StatusBadRequest, gin.H{
+				"error": err.Error(),
+			})
+			return
+		}
+		user.Birthday = b
+	}
+	u, err := uc.UserDao.GetUserByID(user.ID)
+	if err != nil {
+		r.JSON(c.Writer, http.StatusInternalServerError, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
+	user.Password = u.Password
+	user.RoleID = u.RoleID
+	user.Salt = u.Salt
+	user.Status = u.Status
+	if birthday == "" {
+		user.Birthday = u.Birthday
+	}
+	err = uc.UserDao.Update(&user)
+	if err != nil {
+		r.JSON(c.Writer, http.StatusInternalServerError, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
+	r.JSON(c.Writer, http.StatusOK, gin.H{
+		"message": "success",
 	})
 }
 

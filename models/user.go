@@ -28,9 +28,11 @@ type User struct {
 	// Phone 电话
 	Phone string `json:"phone" form:"phone"`
 	// RoleId 角色ID
-	RoleID string `json:"roleid" xorm:"roleid"`
+	RoleID   string `json:"roleid" xorm:"roleid"`
+	RoleName string `json:"roleName" xorm:"<- role_name"`
 	// DeptId 部门Id
-	DeptID int `json:"deptid" form:"deptid" xorm:"deptid"`
+	DeptID   int    `json:"deptid" form:"deptid" xorm:"deptid"`
+	DeptName string `json:"deptName" xorm:"<- dept_name"`
 	// Status 状态(1：启用  2：冻结  3：删除）
 	Status     int8   `json:"status"`
 	StatusName string `json:"statusname" xorm:"<- statusname"`
