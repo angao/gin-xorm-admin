@@ -73,7 +73,7 @@ func (MenuDao) Get(id int64) (*models.Menu, error) {
 // GetByPcode get menu by pcode
 func (MenuDao) GetByPcode(pcode string) (*models.Menu, error) {
 	menu := new(models.Menu)
-	has, err := x.Table("sys_menu").Cols(cols...).Where("code = ?", pcode).Get(menu)
+	has, err := x.Cols(cols...).Where("code = ?", pcode).Get(menu)
 	if err != nil {
 		return nil, err
 	}
@@ -114,4 +114,11 @@ func (MenuDao) GetMenusByMenuIDs(menuIDs []int64) ([]models.ZTreeNode, error) {
 		return nil, err
 	}
 	return menus, nil
+}
+
+// GetAllURL query all menu url
+func (MenuDao) GetAllURL() ([]string, error) {
+	url := make([]string, 0)
+	err := x.Cols("url").Find(&url)
+	return url, err
 }

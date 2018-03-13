@@ -15,4 +15,13 @@
         FROM
             sys_role
     </sql>
+    <sql id="queryURLByRoleID">
+        SELECT
+            url
+        FROM
+            sys_relation rel
+        INNER JOIN sys_menu m ON rel.menuid = m.id
+        WHERE
+            rel.roleid = ?
+    </sql>
 </sqlMap>

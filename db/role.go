@@ -135,3 +135,10 @@ func (RoleDao) SetAuthority(roleID int64, ids string) error {
 	session.Commit()
 	return nil
 }
+
+// GetURLByRoleID get url
+func (RoleDao) GetURLByRoleID(id int64) ([]string, error) {
+	permissions := make([]string, 0)
+	err := x.SqlMapClient("queryURLByRoleID", id).Find(&permissions)
+	return permissions, err
+}
