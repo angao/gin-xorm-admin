@@ -90,3 +90,13 @@ func RandomString(length int) string {
 	}
 	return string(result)
 }
+
+// Contains slice contain sub
+func Contains(slice []string, sub string) bool {
+	for _, str := range slice {
+		if str == sub {
+			return true
+		}
+	}
+	return false
+}

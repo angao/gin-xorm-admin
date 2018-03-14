@@ -6,6 +6,7 @@ import (
 	"strings"
 
 	"github.com/angao/gin-xorm-admin/db"
+	"github.com/angao/gin-xorm-admin/utils"
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
 )
@@ -44,11 +45,11 @@ func Auth() gin.HandlerFunc {
 				permissions = append(permissions, permission...)
 			}
 			allPermissions, _ := menuDao.GetAllURL()
-			if !Contains(allPermissions, url) {
+			if !utils.Contains(allPermissions, url) {
 				c.Next()
 				return
 			}
-			if !Contains(permissions, url) {
+			if !utils.Contains(permissions, url) {
 				c.Redirect(http.StatusUnauthorized, "login")
 				c.Abort()
 				return
@@ -60,14 +61,4 @@ func Auth() gin.HandlerFunc {
 		c.Abort()
 		return
 	}
-}
-
-// Contains slice contain sub
-func Contains(strs []string, s string) bool {
-	for _, str := range strs {
-		if str == s {
-			return true
-		}
-	}
-	return false
 }
