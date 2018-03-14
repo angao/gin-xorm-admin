@@ -29,17 +29,17 @@ func init() {
 	x, err = xorm.NewEngine("mysql", source)
 
 	if err != nil {
-		log.Fatal(err)
+		log.Fatalf("db error: %#v\n", err.Error())
 	}
 
 	err = x.RegisterSqlMap(xorm.Xml("./db/sql/xml", ".xml"))
 	if err != nil {
-		log.Fatal(err)
+		log.Fatalf("db error: %#v\n", err.Error())
 	}
 
 	err = x.RegisterSqlTemplate(xorm.Default("./db/sql/tpl", ".sql"))
 	if err != nil {
-		log.Fatal(err)
+		log.Fatalf("db error: %#v\n", err.Error())
 	}
 
 	err = x.StartFSWatcher()
@@ -47,11 +47,19 @@ func init() {
 		log.Printf("sql parse error: %#v\n", err)
 	}
 
+	err = x.Ping()
+	if err != nil {
+		log.Fatalf("db connect error: %#v\n", err.Error())
+	}
+
 	// 30minute ping db to keep connection
 	timer := time.NewTicker(time.Minute * 30)
 	go func(x *xorm.Engine) {
 		for _ = range timer.C {
-			x.Ping()
+			err = x.Ping()
+			if err != nil {
+				log.Fatalf("db connect error: %#v\n", err.Error())
+			}
 		}
 	}(x)
 	// x.ShowSQL(true)
