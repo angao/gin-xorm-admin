@@ -1,5 +1,7 @@
 //公共配置
 $(document).ready(function () {
+    var height = document.documentElement.clientHeight || document.body.clientHeight;
+    $('#content-main').css('height', height - 140);
 
     // MetsiMenu
     $('#side-menu').metisMenu();
