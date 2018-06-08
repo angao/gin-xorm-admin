@@ -91,7 +91,7 @@ func (uc UserController) ToEdit(c *gin.Context) {
 		})
 		return
 	}
-	birthday := user.User.Birthday.Format("2006-01-02")
+	birthday := time.Time(user.User.Birthday).Format("2006-01-02")
 	r.HTML(c.Writer, http.StatusOK, "system/user/user_edit.html", gin.H{
 		"user":     user.User,
 		"roleName": user.Role.Name,
@@ -117,7 +117,7 @@ func (uc UserController) Edit(c *gin.Context) {
 			})
 			return
 		}
-		user.Birthday = b
+		user.Birthday = models.Time(b)
 	}
 	u, err := uc.UserDao.GetUserByID(user.ID)
 	if err != nil {
@@ -191,7 +191,7 @@ func (uc UserController) Add(c *gin.Context) {
 			})
 			return
 		}
-		user.Birthday = b
+		user.Birthday = models.Time(b)
 	}
 
 	salt := utils.RandomString(5)
