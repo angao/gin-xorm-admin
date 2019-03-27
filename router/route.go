@@ -3,22 +3,19 @@ package router
 import (
 	"github.com/angao/gin-xorm-admin/controller"
 	"github.com/angao/gin-xorm-admin/router/middlewares"
-	"github.com/gin-contrib/sessions"
+	"github.com/angao/gin-xorm-admin/utils"
+	ginsessions "github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
+	"github.com/gorilla/sessions"
 )
 
 // Init 路由
 func Init(port string) {
 	router := gin.New()
 
-	store := sessions.NewCookieStore([]byte("jDIkFg6ju7kEM7DOIWGcXSLwCL6QaMZy"))
-	store.Options(sessions.Options{
-		Path:     "/",
-		HttpOnly: false,
-		Secure:   false,
-		MaxAge:   3600,
-	})
-	router.Use(sessions.Sessions("session_id", store))
+	cookieStore := sessions.NewCookieStore([]byte("jDIkFg6ju7kEM7DOIWGcXSLwCL6QaMZy"))
+	store := utils.NewStore(cookieStore)
+	router.Use(ginsessions.Sessions("session_id", store))
 
 	router.Use(gin.Logger())
 	router.Use(gin.Recovery())
