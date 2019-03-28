@@ -2,6 +2,7 @@ package main
 
 import (
 	"flag"
+	"log"
 
 	"github.com/gin-gonic/gin"
 
@@ -9,13 +10,22 @@ import (
 	"github.com/angao/gin-xorm-admin/router"
 )
 
-func main() {
-	var port, mode string
-	flag.StringVar(&port, "port", "3000", "service listening at, default 3000")
-	flag.StringVar(&mode, "mode", "debug", "service running mode, default debug mode")
+var (
+	port, mode string
+)
 
+func init() {
+	flag.StringVar(&port, "port", "3000", "server listening on, default 3000")
+	flag.StringVar(&mode, "mode", "debug", "server running mode, default debug mode")
+}
+
+func main() {
 	flag.Parse()
 
 	gin.SetMode(mode)
-	router.Init(port)
+	router := router.Init()
+	err := router.Run(":" + port)
+	if err != nil {
+		log.Fatalf("Start server: %+v", err)
+	}
 }
