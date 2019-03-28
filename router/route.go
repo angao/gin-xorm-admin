@@ -10,7 +10,7 @@ import (
 )
 
 // Init 路由
-func Init(port string) {
+func Init() *gin.Engine {
 	router := gin.New()
 
 	cookieStore := sessions.NewCookieStore([]byte("jDIkFg6ju7kEM7DOIWGcXSLwCL6QaMZy"))
@@ -135,6 +135,5 @@ func Init(port string) {
 
 		noticeGroup.POST("/delete", notice.Delete)
 	}
-
-	router.Run(":" + port)
+	return router
 }
