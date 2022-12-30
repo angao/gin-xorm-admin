@@ -15,7 +15,7 @@ require (
 	github.com/eknkc/amber v0.0.0-20171010120322-cdade1c07385 // indirect
 	github.com/fatih/structs v1.1.0 // indirect
 	github.com/gin-contrib/sessions v0.0.0-20190226023029-1532893d996f
-	github.com/gin-gonic/gin v1.3.0
+	github.com/gin-gonic/gin v1.7.0
 	github.com/go-ini/ini v1.42.0
 	github.com/go-sql-driver/mysql v1.4.1
 	github.com/go-xorm/core v0.6.2 // indirect
@@ -33,7 +33,6 @@ require (
 	github.com/xormplus/core v0.0.0-20190120064039-da7907271e2f // indirect
 	github.com/xormplus/xorm v0.0.0-20190323084434-c34726af8844
 	github.com/ziutek/mymysql v1.5.4 // indirect
-	golang.org/x/sys v0.0.0-20190322080309-f49334f85ddc // indirect
 	google.golang.org/appengine v1.5.0 // indirect
 	gopkg.in/flosch/pongo2.v3 v3.0.0-20141028000813-5e81b817a0c4 // indirect
 	gopkg.in/ini.v1 v1.42.0 // indirect
