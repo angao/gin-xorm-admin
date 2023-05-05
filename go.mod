@@ -15,7 +15,7 @@ require (
 	github.com/eknkc/amber v0.0.0-20171010120322-cdade1c07385 // indirect
 	github.com/fatih/structs v1.1.0 // indirect
 	github.com/gin-contrib/sessions v0.0.0-20190226023029-1532893d996f
-	github.com/gin-gonic/gin v1.7.0
+	github.com/gin-gonic/gin v1.9.0
 	github.com/go-ini/ini v1.42.0
 	github.com/go-sql-driver/mysql v1.4.1
 	github.com/go-xorm/core v0.6.2 // indirect
@@ -36,4 +36,5 @@ require (
 	google.golang.org/appengine v1.5.0 // indirect
 	gopkg.in/flosch/pongo2.v3 v3.0.0-20141028000813-5e81b817a0c4 // indirect
 	gopkg.in/ini.v1 v1.42.0 // indirect
+	gopkg.in/yaml.v2 v2.2.8 // indirect
 )
