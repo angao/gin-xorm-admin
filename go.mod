@@ -15,7 +15,7 @@ require (
 	github.com/eknkc/amber v0.0.0-20171010120322-cdade1c07385 // indirect
 	github.com/fatih/structs v1.1.0 // indirect
 	github.com/gin-contrib/sessions v0.0.0-20190226023029-1532893d996f
-	github.com/gin-gonic/gin v1.9.0
+	github.com/gin-gonic/gin v1.9.1
 	github.com/go-ini/ini v1.42.0
 	github.com/go-sql-driver/mysql v1.4.1
 	github.com/go-xorm/core v0.6.2 // indirect
@@ -23,7 +23,9 @@ require (
 	github.com/gorilla/sessions v1.1.3
 	github.com/jackc/fake v0.0.0-20150926172116-812a484cc733 // indirect
 	github.com/jackc/pgx v3.3.0+incompatible // indirect
+	github.com/kr/pretty v0.3.0 // indirect
 	github.com/lib/pq v1.0.0 // indirect
+	github.com/rogpeppe/go-internal v1.8.0 // indirect
 	github.com/satori/go.uuid v1.2.0 // indirect
 	github.com/shopspring/decimal v0.0.0-20180709203117-cd690d0c9e24 // indirect
 	github.com/smartystreets/goconvey v0.0.0-20190330032615-68dc04aab96a // indirect
@@ -34,6 +36,7 @@ require (
 	github.com/xormplus/xorm v0.0.0-20190323084434-c34726af8844
 	github.com/ziutek/mymysql v1.5.4 // indirect
 	google.golang.org/appengine v1.5.0 // indirect
+	gopkg.in/check.v1 v1.0.0-20201130134442-10cb98267c6c // indirect
 	gopkg.in/flosch/pongo2.v3 v3.0.0-20141028000813-5e81b817a0c4 // indirect
 	gopkg.in/ini.v1 v1.42.0 // indirect
 	gopkg.in/yaml.v2 v2.2.8 // indirect
